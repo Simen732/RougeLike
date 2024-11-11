@@ -1,3 +1,27 @@
-[gd_scene format=3 uid="uid://cs3u56q8a35hu"]
+[gd_scene load_steps=5 format=3 uid="uid://cs3u56q8a35hu"]
+
+[ext_resource type="PackedScene" uid="uid://ddbrbidvr5k5l" path="res://Scenes/Player.tscn" id="1_e5luo"]
+[ext_resource type="Script" path="res://Scripts/Main.gd" id="1_rnrt4"]
+[ext_resource type="PackedScene" uid="uid://drmbvludsk8e5" path="res://Scenes/card.tscn" id="2_yts7k"]
+[ext_resource type="PackedScene" uid="uid://b657xt8fhg4ou" path="res://Scenes/Slime.tscn" id="3_0wjrk"]
 
 [node name="Node2D" type="Node2D"]
+script = ExtResource("1_rnrt4")
+
+[node name="CharacterBody2D" parent="." instance=ExtResource("1_e5luo")]
+position = Vector2(249, 568)
+
+[node name="ProgressBar" type="ProgressBar" parent="CharacterBody2D"]
+modulate = Color(1, 0, 0, 1)
+self_modulate = Color(1, 0, 0, 1)
+offset_left = -188.0
+offset_top = -518.0
+offset_right = 494.0
+offset_bottom = -481.0
+show_percentage = false
+
+[node name="Card" parent="." instance=ExtResource("2_yts7k")]
+position = Vector2(905, 915)
+
+[node name="AnimatedSprite2D" parent="." instance=ExtResource("3_0wjrk")]
+position = Vector2(1565, 535)
