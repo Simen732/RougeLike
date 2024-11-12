@@ -11,36 +11,29 @@ script = ExtResource("1_rnrt4")
 [node name="CharacterBody2D" parent="." instance=ExtResource("1_e5luo")]
 position = Vector2(249, 568)
 
-[node name="ProgressBar" type="ProgressBar" parent="CharacterBody2D"]
-modulate = Color(1, 0, 0, 1)
-self_modulate = Color(1, 0, 0, 1)
-offset_left = -188.0
-offset_top = -518.0
-offset_right = 494.0
-offset_bottom = -481.0
-show_percentage = false
-
 [node name="Slime" parent="." instance=ExtResource("3_0wjrk")]
-position = Vector2(1565, 535)
+position = Vector2(1553, 531)
 
 [node name="DamageCard" parent="." instance=ExtResource("5_3skpt")]
-position = Vector2(1267.79, 914)
-rotation = 0.349066
+position = Vector2(1278.79, 950)
+rotation = 0.523599
 
 [node name="DamageCard2" parent="." instance=ExtResource("5_3skpt")]
-position = Vector2(684.795, 926)
-rotation = -0.349066
+position = Vector2(646.795, 960)
+rotation = -0.523599
 
 [node name="DamageCard3" parent="." instance=ExtResource("5_3skpt")]
 position = Vector2(1126.79, 856)
-rotation = 0.174533
+rotation = 0.261799
 
 [node name="Sprite2D3" parent="." instance=ExtResource("5_3skpt")]
-position = Vector2(793.794, 875)
-rotation = -0.174533
+position = Vector2(784.795, 869)
+rotation = -0.261799
 
 [node name="Sprite2D4" parent="." instance=ExtResource("5_3skpt")]
 position = Vector2(954.794, 822)
+
+[node name="Global" type="Node2D" parent="."]
 
 [connection signal="card_activated" from="DamageCard" to="Slime" method="_on_damage_card_card_activated"]
 [connection signal="card_activated" from="DamageCard2" to="Slime" method="_on_damage_card_2_card_activated"]

@@ -1,6 +1,9 @@
 extends AnimatedSprite2D
 @onready var progress_bar = $ProgressBar
+@onready var animated_sprite_2d = $"."
 
+
+var Dead = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -9,15 +12,14 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
-
+	if progress_bar.value < 1 and !Dead:
+		animated_sprite_2d.play("Death")
+		Dead = true
+	else:
+		animated_sprite_2d.play("idle")
+		
 
 
 func _on_damage_card_card_activated(damage_amount):
-	progress_bar.value -= damage_amount
-	print("hdhsahdadsa")
-
-
-func _on_damage_card_2_card_activated(damage_amount):
 	progress_bar.value -= damage_amount
 	print("hdhsahdadsa")

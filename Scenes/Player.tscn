@@ -1,5 +1,6 @@
-[gd_scene load_steps=17 format=3 uid="uid://ddbrbidvr5k5l"]
+[gd_scene load_steps=18 format=3 uid="uid://ddbrbidvr5k5l"]
 
+[ext_resource type="Script" path="res://Scripts/Player.gd" id="1_101e0"]
 [ext_resource type="Texture2D" uid="uid://dfn6b5m15w8ep" path="res://animations/Warrior_Blue.png" id="1_dsxjo"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gbcji"]
@@ -115,6 +116,7 @@ animations = [{
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 position = Vector2(126, 306)
+script = ExtResource("1_101e0")
 
 [node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
@@ -124,3 +126,12 @@ sprite_frames = SubResource("SpriteFrames_0qq5y")
 animation = &"Idle"
 autoplay = "Idle"
 frame_progress = 0.272928
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+modulate = Color(1, 0, 0, 1)
+self_modulate = Color(1, 0, 0, 1)
+offset_left = -188.0
+offset_top = -451.0
+offset_right = 494.0
+offset_bottom = -414.0
+show_percentage = false
