@@ -2,8 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://ddbrbidvr5k5l" path="res://Scenes/Player.tscn" id="1_e5luo"]
 [ext_resource type="Script" path="res://Scripts/Main.gd" id="1_rnrt4"]
-[ext_resource type="PackedScene" uid="uid://drmbvludsk8e5" path="res://Scenes/card.tscn" id="2_yts7k"]
 [ext_resource type="PackedScene" uid="uid://b657xt8fhg4ou" path="res://Scenes/Slime.tscn" id="3_0wjrk"]
+[ext_resource type="PackedScene" uid="uid://cw3ijdoqbcmjd" path="res://Scenes/DamagCard.tscn" id="5_3skpt"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_rnrt4")
@@ -20,8 +20,27 @@ offset_right = 494.0
 offset_bottom = -481.0
 show_percentage = false
 
-[node name="Card" parent="." instance=ExtResource("2_yts7k")]
-position = Vector2(905, 915)
-
-[node name="AnimatedSprite2D" parent="." instance=ExtResource("3_0wjrk")]
+[node name="Slime" parent="." instance=ExtResource("3_0wjrk")]
 position = Vector2(1565, 535)
+
+[node name="DamageCard" parent="." instance=ExtResource("5_3skpt")]
+position = Vector2(1267.79, 914)
+rotation = 0.349066
+
+[node name="DamageCard2" parent="." instance=ExtResource("5_3skpt")]
+position = Vector2(684.795, 926)
+rotation = -0.349066
+
+[node name="DamageCard3" parent="." instance=ExtResource("5_3skpt")]
+position = Vector2(1126.79, 856)
+rotation = 0.174533
+
+[node name="Sprite2D3" parent="." instance=ExtResource("5_3skpt")]
+position = Vector2(793.794, 875)
+rotation = -0.174533
+
+[node name="Sprite2D4" parent="." instance=ExtResource("5_3skpt")]
+position = Vector2(954.794, 822)
+
+[connection signal="card_activated" from="DamageCard" to="Slime" method="_on_damage_card_card_activated"]
+[connection signal="card_activated" from="DamageCard2" to="Slime" method="_on_damage_card_2_card_activated"]

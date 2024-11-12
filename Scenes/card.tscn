@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://Scripts/CardBase.gd" id="2_inqii"]
 
 [node name="Sprite2D" type="Sprite2D"]
+scale = Vector2(2, 2)
 texture = ExtResource("1_3ayid")
 region_enabled = true
 region_rect = Rect2(5.80005, 2.10004, 111.1, 133.1)

@@ -1,9 +1,12 @@
 # CardBase.gd
 extends Sprite2D  # Set to Sprite2D for compatibility with your setup
 
-@export var activation_threshold := 100  # How far to drag to activate
+@export var activation_threshold := 300  # How far to drag to activate
 var is_dragging := false
 var initial_position := Vector2.ZERO
+
+signal card_activated(damage_amount: int)
+
 
 func _ready():
 	initial_position = position
@@ -13,7 +16,7 @@ func _input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			# Check if the mouse is over the sprite
-			if get_global_mouse_position().distance_to(global_position) < get_card_size().x / 2:
+			if get_global_mouse_position().distance_to(global_position) < get_card_size().x / 8:
 				# Start dragging when clicking on the card
 				is_dragging = true
 				
@@ -34,10 +37,10 @@ func _process(delta):
 		if position.y <= initial_position.y - activation_threshold:
 			activate_card()
 
-# Virtual function to allow child classes to implement specific activation logic
+## Virtual function to allow child classes to implement specific activation logic
 func activate_card():
 	print("Card activated!")  # Default behavior; can be overridden in derived classes
-	reset_position()
+
 
 func reset_position():
 	position = initial_position
