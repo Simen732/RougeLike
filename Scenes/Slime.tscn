@@ -136,7 +136,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_n2bfc")
 }],
 "loop": true,
-"name": &"default",
+"name": &"Idle",
 "speed": 5.0
 }]
 
@@ -145,8 +145,8 @@ texture_filter = 1
 position = Vector2(487, 270)
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_5jp54")
-animation = &"Attack"
-autoplay = "default"
+animation = &"Idle"
+autoplay = "Idle"
 script = ExtResource("2_13buo")
 
 [node name="ProgressBar" type="ProgressBar" parent="."]

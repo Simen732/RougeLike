@@ -16,7 +16,7 @@ func _process(delta):
 		animated_sprite_2d.play("Death")
 		Dead = true
 	else:
-		animated_sprite_2d.play("idle")
+		animated_sprite_2d.play("Idle")
 		
 
 

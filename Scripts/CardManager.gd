@@ -10,7 +10,7 @@ func _ready():
 	hand_node = get_node("../Hand")
 	print(hand_node)
 	initialize_deck()
-	for i in range(2):
+	for i in range(7):
 		draw_card()
 
 	# Legger til to DamageCards i decket
@@ -29,14 +29,14 @@ func add_card_to_deck(card):
 
 	# Trekker et kort fra decket
 func draw_card():
-	if deck.size() > 0:
-		var card = deck.pop_front()
-		hand.append(card)
 
-		var card_instance = damageCard.instantiate()
-		hand_node.add_child(card_instance)
+	var card = deck.pop_front()
+	hand.append(card)
 
-		arrange_hand()
+	var card_instance = damageCard.instantiate()
+	hand_node.add_child(card_instance)
+
+	arrange_hand()
 
 	# Plasserer kortene horisontalt i hånden kreft
 func arrange_hand():
