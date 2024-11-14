@@ -15,6 +15,10 @@ position = Vector2(249, 568)
 position = Vector2(1553, 531)
 
 [node name="Global" type="Node2D" parent="."]
+position = Vector2(962, 552)
 
-[node name="Node2D" parent="." instance=ExtResource("5_xebea")]
+[node name="CardManager" parent="." instance=ExtResource("5_xebea")]
 position = Vector2(725, 377)
+
+[node name="Hand" type="Node2D" parent="."]
+position = Vector2(979, 914)

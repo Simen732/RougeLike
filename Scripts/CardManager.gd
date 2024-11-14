@@ -1,53 +1,45 @@
 extends Node2D
 
-# Decks and hand
 var deck = []
 var hand = []
-var discard_pile = []
+var damageCard = preload("res://Scenes/DamagCard.tscn")
+var hand_node
 
-# Constants for deck size, max hand size, etc.
-const MAX_HAND_SIZE = 5
-
-# Initialize the deck with starter cards
+	# Initialiserer decket og gir spileren to kort
 func _ready():
+	hand_node = get_node("../Hand")
+	print(hand_node)
 	initialize_deck()
+	for i in range(2):
+		draw_card()
 
+	# Legger til to DamageCards i decket
 func initialize_deck():
-	# Here you could create initial cards
 	add_card_to_deck(Global.card_types["DamageCard"].new())
 	add_card_to_deck(Global.card_types["DamageCard"].new())
-	print("hello")
-	# Add more starter cards as needed
-
 	shuffle_deck()
 
-func add_card_to_deck(card):
-	deck.append(card)
-
+	# Blander decket
 func shuffle_deck():
 	deck.shuffle()
 
+	# Legger et kort til decket
+func add_card_to_deck(card):
+	deck.append(card)
+
+	# Trekker et kort fra decket
 func draw_card():
-	print("draw card")
-	if deck.size() == 0:
-		reshuffle_discard_into_deck()
-
 	if deck.size() > 0:
-		var drawn_card = deck.pop_front()
-		hand.append(drawn_card)
-		
-		if hand.size() > MAX_HAND_SIZE:
-			discard_card(hand.pop_front())
-		
-		return drawn_card
-	return null
+		var card = deck.pop_front()
+		hand.append(card)
 
-func discard_card(card):
-	hand.erase(card)
-	discard_pile.append(card)
+		var card_instance = damageCard.instantiate()
+		hand_node.add_child(card_instance)
 
-func reshuffle_discard_into_deck():
-	deck = discard_pile.duplicate()
-	discard_pile.clear()
-	shuffle_deck()
+		arrange_hand()
 
+	# Plasserer kortene horisontalt i hånden kreft
+func arrange_hand():
+	for i in range(hand.size()):
+		var card_instance = hand_node.get_child(i)
+		card_instance.position = Vector2(i * 100, 0)

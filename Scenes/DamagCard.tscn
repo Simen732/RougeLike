@@ -7,5 +7,5 @@
 scale = Vector2(2, 2)
 texture = ExtResource("1_a7dgd")
 region_enabled = true
-region_rect = Rect2(5.80005, 2.10004, 111.1, 133.1)
+region_rect = Rect2(130.793, 4.25191, 102.169, 126.844)
 script = ExtResource("2_hr30p")
