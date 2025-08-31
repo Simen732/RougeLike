@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://cs3u56q8a35hu"]
+[gd_scene load_steps=6 format=3 uid="uid://cs3u56q8a35hu"]
 
 [ext_resource type="PackedScene" uid="uid://ddbrbidvr5k5l" path="res://Scenes/Player.tscn" id="1_e5luo"]
 [ext_resource type="Script" path="res://Scripts/Main.gd" id="1_rnrt4"]
 [ext_resource type="PackedScene" uid="uid://b657xt8fhg4ou" path="res://Scenes/Slime.tscn" id="3_0wjrk"]
+[ext_resource type="Texture2D" uid="uid://c7kqbo1mekn4m" path="res://assets/pixelCardAssest.png" id="5_jtuci"]
 [ext_resource type="PackedScene" uid="uid://bvhieogc3kfgg" path="res://Scenes/CardManager.tscn" id="5_xebea"]
 
 [node name="Node2D" type="Node2D"]
@@ -21,4 +22,28 @@ position = Vector2(962, 552)
 position = Vector2(725, 377)
 
 [node name="Hand" type="Node2D" parent="."]
-position = Vector2(979, 914)
+position = Vector2(488, 914)
+
+[node name="DeckVisual" type="Node2D" parent="."]
+position = Vector2(220, 907)
+
+[node name="Sprite2D" type="Sprite2D" parent="DeckVisual"]
+texture = ExtResource("5_jtuci")
+region_enabled = true
+region_rect = Rect2(128, 0, 109, 134.5)
+
+[node name="DeckCountLabel" type="Label" parent="DeckVisual"]
+offset_left = -13.0
+offset_top = -16.0
+offset_right = 27.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 24
+text = "20"
+
+[node name="EndTurnButton" type="Button" parent="."]
+offset_left = 1593.0
+offset_top = 862.0
+offset_right = 1787.0
+offset_bottom = 906.0
+theme_override_font_sizes/font_size = 30
+text = "End Turn"

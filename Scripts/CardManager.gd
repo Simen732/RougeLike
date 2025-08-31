@@ -2,44 +2,162 @@ extends Node2D
 
 var deck = []
 var hand = []
+var discard = []
 var damageCard = preload("res://Scenes/DamagCard.tscn")
 var hand_node
+var deck_visual_node
+var deck_count_label
+var MAX_HAND_SIZE = 7  # Maximum cards in hand
 
-	# Initialiserer decket og gir spileren to kort
+# Initialiserer decket og gir spileren to kort
 func _ready():
 	hand_node = get_node("../Hand")
-	print(hand_node)
+	deck_visual_node = get_node("../DeckVisual")
+	deck_count_label = get_node("../DeckVisual/DeckCountLabel")
+	print("Card Manager: Hand node found at ", hand_node)
 	initialize_deck()
-	for i in range(7):
+	update_deck_visual()
+	draw_starting_hand()
+
+# Draw initial hand of 4 cards
+func draw_starting_hand():
+	for i in range(4):
 		draw_card()
 
-	# Legger til to DamageCards i decket
+# Legger til mange DamageCards i decket (20 copies)
 func initialize_deck():
-	add_card_to_deck(Global.card_types["DamageCard"].new())
-	add_card_to_deck(Global.card_types["DamageCard"].new())
+	for i in range(20):
+		add_card_to_deck(Global.card_types["DamageCard"].new())
 	shuffle_deck()
+	print("Card Manager: Deck initialized with ", deck.size(), " cards")
 
-	# Blander decket
+# Blander decket
 func shuffle_deck():
 	deck.shuffle()
 
-	# Legger et kort til decket
+# Legger et kort til decket
 func add_card_to_deck(card):
 	deck.append(card)
 
-	# Trekker et kort fra decket
+# Update the visual representation of the deck
+func update_deck_visual():
+	if deck_count_label:
+		deck_count_label.text = str(deck.size())
+	
+	# Show/hide deck visual based on whether deck has cards
+	if deck_visual_node:
+		deck_visual_node.visible = deck.size() > 0
+
+# Trekker et kort fra decket
 func draw_card():
+	# Check if hand is already at maximum size
+	if hand_node.get_child_count() >= MAX_HAND_SIZE:
+		print("Card Manager: Hand is full (", MAX_HAND_SIZE, " cards), cannot draw more")
+		return false
+		
+	if deck.size() == 0:
+		# If deck is empty, shuffle the discard pile into the deck
+		if discard.size() > 0:
+			deck = discard.duplicate()
+			discard.clear()
+			shuffle_deck()
+			print("Card Manager: Shuffled discard pile into deck")
+		else:
+			print("Card Manager: No cards left to draw!")
+			return false
 
 	var card = deck.pop_front()
 	hand.append(card)
 
 	var card_instance = damageCard.instantiate()
 	hand_node.add_child(card_instance)
+	print("Card Manager: Added card to hand at position ", card_instance.position)
+	
+	# Make sure region_enabled is true for proper sizing
+	if card_instance is Sprite2D:
+		card_instance.region_enabled = true
+	
+	# Connect card signals
+	if card_instance.has_signal("card_activated"):
+		card_instance.connect("card_activated", _on_card_activated)
 
 	arrange_hand()
+	update_deck_visual()
+	return true
 
-	# Plasserer kortene horisontalt i hånden kreft
-func arrange_hand():
-	for i in range(hand.size()):
+# Draw multiple cards (for end turn) - respects hand size limit
+func draw_cards(count: int):
+	var cards_drawn = 0
+	for i in range(count):
+		if draw_card():
+			cards_drawn += 1
+		else:
+			break  # Stop drawing if we can't draw more cards
+	
+	print("Card Manager: Drew ", cards_drawn, " out of ", count, " requested cards")
+	return cards_drawn
+
+# Remove used (grayed out) cards from hand
+func remove_used_cards():
+	var cards_to_remove = []
+	
+	# Find all used cards (children of hand_node that are not playable)
+	for i in range(hand_node.get_child_count()):
 		var card_instance = hand_node.get_child(i)
-		card_instance.position = Vector2(i * 100, 0)
+		if card_instance.has_method("is_card_playable") and not card_instance.is_card_playable():
+			cards_to_remove.append(card_instance)
+	
+	# Remove used cards
+	for card in cards_to_remove:
+		# Add the corresponding data card to discard pile
+		if hand.size() > 0:
+			var card_data = hand.pop_front()  # Remove from hand data
+			discard.append(card_data)
+		
+		# Remove the visual card
+		card.queue_free()
+	
+	# Clean up hand data array to match visual cards
+	hand.clear()
+	for i in range(hand_node.get_child_count()):
+		if hand_node.get_child(i) and not hand_node.get_child(i).is_queued_for_deletion():
+			hand.append(Global.card_types["DamageCard"].new())
+	
+	arrange_hand()
+	print("Card Manager: Removed ", cards_to_remove.size(), " used cards")
+
+# End turn functionality
+func end_turn():
+	print("Card Manager: Ending turn")
+	remove_used_cards()
+	# Wait a frame for cards to be removed
+	await get_tree().process_frame
+	
+	# Calculate how many cards to draw (up to 4, but respect hand size limit)
+	var current_hand_size = hand_node.get_child_count()
+	var cards_to_draw = min(4, MAX_HAND_SIZE - current_hand_size)
+	
+	if cards_to_draw > 0:
+		var drawn = draw_cards(cards_to_draw)
+		print("Card Manager: Turn ended, drew ", drawn, " new cards (hand size: ", current_hand_size + drawn, "/", MAX_HAND_SIZE, ")")
+	else:
+		print("Card Manager: Turn ended, hand is full - no cards drawn")
+
+# Plasserer kortene horisontalt i hånden kreft
+func arrange_hand():
+	for i in range(hand_node.get_child_count()):
+		var card_instance = hand_node.get_child(i)
+		if card_instance and not card_instance.is_queued_for_deletion():
+			var spacing = 150  # Increased spacing between cards
+			card_instance.position = Vector2(i * spacing, 0)
+			print("Card Manager: Arranged card ", i, " at position ", card_instance.position)
+			
+			# Update the initial position of the card AFTER arranging it
+			if card_instance.has_method("update_initial_position"):
+				card_instance.update_initial_position()
+
+# Handle card activation
+func _on_card_activated(damage_amount):
+	# This will be called when any card is activated
+	print("Card Manager: Card activated with damage: ", damage_amount)
+	# You can add game logic here like checking if enemy is defeated

@@ -86,7 +86,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_7pi70")
 }],
-"loop": true,
+"loop": false,
 "name": &"Attack",
 "speed": 5.0
 }, {
@@ -123,9 +123,10 @@ texture_filter = 1
 position = Vector2(16, -24)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_0qq5y")
-animation = &"Idle"
+animation = &"Attack"
 autoplay = "Idle"
-frame_progress = 0.272928
+frame = 7
+frame_progress = 1.0
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
 modulate = Color(1, 0, 0, 1)
