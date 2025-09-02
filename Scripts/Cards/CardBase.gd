@@ -16,14 +16,12 @@ signal card_activated(damage_amount: int)
 func _ready():
 	# Set initial position, but this might be before arrangement in the hand
 	initial_position = position
-	print("Card initialized at position: ", initial_position)
 	# We'll update this position again after arrangement
 
 # Function to update the initial position after card arrangement
 func update_initial_position():
 	initial_position = position
 	position_initialized = true
-	print("Card initial position updated to: ", initial_position)
 
 func _input(event):
 	# Only process input if the card is playable
@@ -31,37 +29,26 @@ func _input(event):
 		return
 	
 	# Check if the left mouse button is pressed on the card
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and Global.turn_manager.is_player_turn():
 		if event.pressed:
-			# Check if the mouse is over the sprite with a more generous hit area
 			var distance = get_global_mouse_position().distance_to(global_position)
 			var card_width = get_card_size().x
-			print("Mouse distance to card: ", distance, " card width: ", card_width)
 			
-			if distance < card_width / 2:  # More generous hit detection
-				print("Card clicked: Starting drag")
+			if distance < card_width / 2: 
 				is_dragging = true
-				# Store the starting positions when drag begins
 				drag_start_mouse_pos = get_global_mouse_position()
 				drag_start_card_pos = position
-				# Visual feedback
-				modulate = Color(1.2, 1.2, 1.2)  # Slight highlight
+				modulate = Color(1.2, 1.2, 1.2) 
 		else:
-			# Stop dragging when releasing the mouse button
 			if is_dragging:
 				is_dragging = false
 				if position.y <= initial_position.y - activation_threshold:
-					# Card has been dragged high enough to activate
-					print("Card released above threshold: Activating")
 					activate_card()
 				else:
-					# Card wasn't dragged far enough, return to initial position
-					print("Card released below threshold: Returning to position")
 					position = initial_position
-					modulate = Color(1, 1, 1)  # Reset color
+					modulate = Color(1, 1, 1)  # Farge greie
 
 func _process(delta):
-	# Ensure initial position is properly set - fallback in case update_initial_position wasn't called
 	if !position_initialized and position != Vector2.ZERO:
 		update_initial_position()
 		
@@ -73,7 +60,6 @@ func _process(delta):
 		position.x = initial_position.x
 		position.y = drag_start_card_pos.y + mouse_delta.y
 		
-		print("Dragging card: Mouse delta Y: ", mouse_delta.y, " Card Y: ", position.y, " Initial Y: ", initial_position.y)
 		
 		# Visual feedback - make card glow when it's above the activation threshold
 		if position.y <= initial_position.y - activation_threshold:
@@ -83,7 +69,11 @@ func _process(delta):
 
 ## Virtual function to allow child classes to implement specific activation logic
 func activate_card():
-	print("Card activated!")  # Default behavior; can be overridden in derived classes
+	# Check if game is frozen
+	if Global.is_game_frozen():
+		print("Card activation blocked - game is frozen")
+		return
+	
 	
 	# Trigger player animation based on card type
 	Global.trigger_player_animation(card_type_name, get_animation_data())

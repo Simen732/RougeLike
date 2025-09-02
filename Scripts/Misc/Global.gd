@@ -3,10 +3,14 @@ extends Node
 var PlayerMaxHealth = 100
 var MAX_HAND_SIZE = 7  # Maximum cards in hand
 
+# Global references and configuration
 var card_types = {
-	"DamageCard": preload("res://Scripts/DamagCard.gd"),
-	# Add more card types here as you create them
+	"SingleSlash": preload("res://Scripts/Cards/SingleSlash.gd"),
+	"DoubleSlash": preload("res://Scripts/Cards/DoubleSlash.gd")
 }
+
+# Damage number manager reference
+var damage_number_manager: Node2D
 
 # Track enemies in combat
 var enemies_in_combat = []
@@ -19,12 +23,28 @@ var player_character = null
 var audio_player: AudioStreamPlayer
 var master_volume: float = 1.0  # Add volume control
 
+# Turn manager reference
+var turn_manager: Node
+
+# Game state
+var game_frozen: bool = false
+
 func _ready():
+	# Initialize turn manager first
+	turn_manager = preload("res://Scripts/CombatMechanics/TurnManager.gd").new()
+	add_child(turn_manager)
+	print("Global: TurnManager initialized")
+	
 	# Create an audio player for sound effects
 	audio_player = AudioStreamPlayer.new()
 	add_child(audio_player)
 	audio_player.volume_db = linear_to_db(master_volume)
 	print("Global: Audio system initialized")
+	
+	# Create and setup damage number manager
+	damage_number_manager = preload("res://Scripts/VisuelleGreier/DamageNumberManager.gd").new()
+	add_child(damage_number_manager)
+	print("Global: DamageNumberManager initialized")
 
 # Register an enemy when it enters combat
 func register_enemy(enemy):
@@ -32,6 +52,11 @@ func register_enemy(enemy):
 	# Set as current target if it's the first enemy
 	if current_target == null:
 		current_target = enemy
+	
+	# Also register with turn manager
+	if turn_manager:
+		turn_manager.register_enemy(enemy)
+		print("Global: Enemy registered with turn manager - ", enemy.name)
 
 # Remove enemy from combat
 func unregister_enemy(enemy):
@@ -39,11 +64,21 @@ func unregister_enemy(enemy):
 	# If current target was this enemy, select a new target
 	if current_target == enemy:
 		current_target = enemies_in_combat[0] if enemies_in_combat.size() > 0 else null
+	
+	# Also unregister from turn manager
+	if turn_manager:
+		turn_manager.unregister_enemy(enemy)
+		print("Global: Enemy unregistered from turn manager - ", enemy.name)
 
 # Register player for animations
 func register_player(player):
 	player_character = player
 	print("Global: Player registered for animations")
+	
+	# Also register with turn manager
+	if turn_manager:
+		turn_manager.register_player(player)
+		print("Global: Player registered with turn manager")
 
 # Get the sound file path for a specific card type - automatically detect files
 func get_sound_path_for_card_type(card_type: String) -> String:
@@ -99,3 +134,38 @@ func set_sound_volume(volume: float):
 	master_volume = clamp(volume, 0.0, 1.0)
 	audio_player.volume_db = linear_to_db(master_volume)
 
+# Convenience method to show damage numbers
+func show_damage_number(damage: int, world_position: Vector2, color: Color = Color.RED):
+	if damage_number_manager:
+		damage_number_manager.show_damage(damage, world_position, color)
+
+# Game state management
+func set_game_frozen(frozen: bool):
+	game_frozen = frozen
+	print("Global: Game frozen state set to ", frozen)
+	
+	# Disable turn manager when frozen
+	if turn_manager and frozen:
+		turn_manager.set_process(false)
+		turn_manager.set_physics_process(false)
+
+func is_game_frozen() -> bool:
+	return game_frozen
+
+# Handle input for restart/quit when game is frozen
+func _input(event):
+	if game_frozen and event is InputEventKey and event.pressed:
+		if event.keycode == KEY_R:
+			restart_game()
+		elif event.keycode == KEY_ESCAPE:
+			quit_game()
+
+func restart_game():
+	print("Global: Restarting game")
+	game_frozen = false
+	get_tree().paused = false
+	get_tree().reload_current_scene()
+
+func quit_game():
+	print("Global: Quitting game")
+	get_tree().quit()

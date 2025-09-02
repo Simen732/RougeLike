@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://drmbvludsk8e5"]
 
 [ext_resource type="Texture2D" uid="uid://c7kqbo1mekn4m" path="res://assets/pixelCardAssest.png" id="1_3ayid"]
-[ext_resource type="Script" path="res://Scripts/CardBase.gd" id="2_inqii"]
+[ext_resource type="Script" uid="uid://cvokdv7rr2atp" path="res://Scripts/Cards/CardBase.gd" id="2_wf8id"]
 
 [node name="Sprite2D" type="Sprite2D"]
 scale = Vector2(2, 2)
 texture = ExtResource("1_3ayid")
 region_enabled = true
 region_rect = Rect2(5.80005, 2.10004, 111.1, 133.1)
-script = ExtResource("2_inqii")
+script = ExtResource("2_wf8id")

@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://6nlqq3pv068l"]
+
+[ext_resource type="Script" uid="uid://dpj6f6dfwynkk" path="res://Scripts/Misc/pause_menu.gd" id="1_lj4oq"]
+
+[node name="Node2D" type="Node2D"]
+visible = false
+script = ExtResource("1_lj4oq")
+
+[node name="Continue" type="Button" parent="."]
+offset_top = -2.0
+offset_right = 184.0
+offset_bottom = 61.0
+theme_override_font_sizes/font_size = 40
+text = "Continue"
+
+[node name="Escape" type="Button" parent="."]
+offset_left = 18.0
+offset_top = 71.0
+offset_right = 165.0
+offset_bottom = 134.0
+theme_override_font_sizes/font_size = 40
+text = "Escape"

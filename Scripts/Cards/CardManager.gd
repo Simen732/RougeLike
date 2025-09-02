@@ -26,7 +26,7 @@ func draw_starting_hand():
 
 # Initialize deck with SingleSlash and DoubleSlash cards
 func initialize_deck():
-	# Initialize deck with SingleSlash and DoubleSlash cards
+	# Add 15 SingleSlash cards
 	for i in range(15):
 		add_card_to_deck(Global.card_types["SingleSlash"].new())
 	
@@ -171,10 +171,7 @@ func end_turn():
 	
 	# Tell the turn manager that player turn is over
 	if Global.turn_manager:
-		print("Card Manager: Ending player turn via TurnManager")
 		Global.turn_manager.end_player_turn()
-	else:
-		print("Card Manager: Warning - TurnManager not found")
 
 # Plasserer kortene horisontalt i hånden kreft
 func arrange_hand():

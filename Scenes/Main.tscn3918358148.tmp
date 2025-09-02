@@ -1,12 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://cs3u56q8a35hu"]
+[gd_scene load_steps=9 format=3 uid="uid://cs3u56q8a35hu"]
 
 [ext_resource type="PackedScene" uid="uid://ddbrbidvr5k5l" path="res://Scenes/Player.tscn" id="1_e5luo"]
-[ext_resource type="Script" uid="uid://brdlbvhpsov6p" path="res://Scripts/Misc/Main.gd" id="1_v1gob"]
 [ext_resource type="PackedScene" uid="uid://b657xt8fhg4ou" path="res://Scenes/Slime.tscn" id="3_0wjrk"]
 [ext_resource type="Texture2D" uid="uid://c7kqbo1mekn4m" path="res://assets/pixelCardAssest.png" id="5_jtuci"]
 [ext_resource type="PackedScene" uid="uid://bvhieogc3kfgg" path="res://Scenes/CardManager.tscn" id="5_xebea"]
 [ext_resource type="PackedScene" uid="uid://6nlqq3pv068l" path="res://Scenes/PauseMenu.tscn" id="6_v1gob"]
-[ext_resource type="PackedScene" uid="uid://45hrtrppkaxp" path="res://Scenes/TurnOrderUI.tscn" id="7_jw32o"]
 
 [sub_resource type="Animation" id="Animation_v1gob"]
 length = 0.001
@@ -45,7 +43,6 @@ _data = {
 }
 
 [node name="Node2D2" type="Node2D"]
-script = ExtResource("1_v1gob")
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("1_e5luo")]
 position = Vector2(249, 568)
@@ -91,19 +88,5 @@ libraries = {
 &"": SubResource("AnimationLibrary_jw32o")
 }
 
-[node name="CanvasModulate" type="CanvasModulate" parent="."]
-visible = false
-position = Vector2(932, 515)
-color = Color(0.548963, 0.548963, 0.548963, 1)
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("6_v1gob")]
-position = Vector2(889, 361)
-
-[node name="TurnOrderUI" parent="." instance=ExtResource("7_jw32o")]
-offset_left = 538.0
-offset_top = 60.0
-offset_right = 1138.0
-offset_bottom = 120.0
-grow_horizontal = 2
+[node name="Node2D" parent="." instance=ExtResource("6_v1gob")]
+position = Vector2(890, 392)
