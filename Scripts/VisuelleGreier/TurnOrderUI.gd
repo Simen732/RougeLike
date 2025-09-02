@@ -4,12 +4,16 @@ extends Control
 var turn_icon_scene = preload("res://Scenes/TurnIcon.tscn")
 
 var turn_queue = []  # Array of turn entries showing multiple rounds
+var past_turns = []  # Array of completed turns (for history)
 var max_visible_turns = 12  # How many turn icons to show at once
+var max_past_turns = 8  # How many past turns to keep before removing old ones
+var current_turn_index = 0  # Index of the current turn in the combined display
 
 # Turn entry structure: {entity: Node, speed: int, next_turn_time: float}
 var entities = []  # All entities in combat with their speed stats
 var current_time = 0.0  # Current turn time
 var turn_increment = 10.0  # Base time increment per turn
+var total_turns_completed = 0  # Track total turns for history management
 
 func _ready():
 	print("TurnOrderUI: Initializing...")
@@ -117,19 +121,32 @@ func calculate_initial_turn_order():
 func _on_turn_ended(entity):
 	print("TurnOrderUI: Turn ended for ", entity.name if entity else "Unknown")
 	
-	# Remove the current turn from queue
+	# Move current turn to past turns
 	if turn_queue.size() > 0 and turn_queue[0].entity == entity:
+		var completed_turn = turn_queue[0]
 		turn_queue.remove_at(0)
-		print("TurnOrderUI: Removed ", entity.name, " from front of queue")
+		completed_turn["completed"] = true  # Mark as completed
+		past_turns.append(completed_turn)
+		total_turns_completed += 1
+		print("TurnOrderUI: Moved ", entity.name, " to past turns")
+		
+		# Remove old past turns if we have too many
+		while past_turns.size() > max_past_turns:
+			var removed_turn = past_turns[0]
+			past_turns.remove_at(0)
+			print("TurnOrderUI: Removed old past turn: ", removed_turn.entity.name if removed_turn.entity else "Unknown")
+	
+	# Update current turn index (it stays the same since we removed from front but added to past)
+	current_turn_index = past_turns.size()
 	
 	# Update entity speeds in case they changed during the turn
 	update_entity_speeds()
 	
-	# Just extend the queue instead of completely recalculating
+	# Extend the queue to maintain future visibility
 	extend_turn_queue()
 	
-	# Update the visual UI
-	call_deferred("update_ui")
+	# Update the visual UI with timeline
+	call_deferred("update_timeline_ui")
 
 func update_entity_speeds():
 	# Update speeds for all registered entities in case they changed
@@ -232,8 +249,8 @@ func extend_turn_queue():
 	
 	print("TurnOrderUI: Extended queue, now has ", turn_queue.size(), " entries")
 
-func update_ui():
-	print("TurnOrderUI: Attempting to update UI with ", turn_queue.size(), " turns")
+func update_timeline_ui():
+	print("TurnOrderUI: Updating timeline UI - Past: ", past_turns.size(), " Future: ", turn_queue.size())
 	
 	# Safety check - make sure we have a container
 	var container = turn_order_container
@@ -248,8 +265,6 @@ func update_ui():
 		print("TurnOrderUI: Error - Container is not valid")
 		return
 	
-	print("TurnOrderUI: Using container: ", container, " with ", container.get_child_count(), " existing children")
-	
 	# Clear existing children completely
 	for child in container.get_children():
 		child.queue_free()
@@ -258,35 +273,74 @@ func update_ui():
 	await get_tree().process_frame
 	await get_tree().process_frame  # Wait an extra frame to be sure
 	
-	print("TurnOrderUI: Container cleared, now has ", container.get_child_count(), " children")
+	print("TurnOrderUI: Container cleared, creating timeline...")
 	
-	if turn_queue.size() == 0:
-		print("TurnOrderUI: No turns in queue, UI will be empty")
-		return
+	# Create combined timeline: [Past turns] + [Current turn] + [Future turns]
+	var timeline = []
 	
-	# Create new turn icons
-	for i in range(min(turn_queue.size(), max_visible_turns)):
-		var turn_entry = turn_queue[i]
+	# Add past turns
+	for past_turn in past_turns:
+		timeline.append({
+			"entry": past_turn,
+			"type": "past"
+		})
+	
+	# Add current turn (first in future queue)
+	if turn_queue.size() > 0:
+		timeline.append({
+			"entry": turn_queue[0],
+			"type": "current"
+		})
+		
+		# Add remaining future turns
+		for i in range(1, min(turn_queue.size(), max_visible_turns - past_turns.size())):
+			timeline.append({
+				"entry": turn_queue[i],
+				"type": "future"
+			})
+	
+	# Determine the visible portion of timeline (centered on current turn)
+	var start_index = 0
+	var current_pos = past_turns.size()  # Position of current turn in timeline
+	
+	# Try to center current turn, but don't go below 0
+	var half_visible = max_visible_turns / 2
+	start_index = max(0, current_pos - half_visible)
+	
+	# Create icons for visible portion
+	var icons_created = 0
+	for i in range(start_index, min(timeline.size(), start_index + max_visible_turns)):
+		var timeline_item = timeline[i]
+		var turn_entry = timeline_item.entry
+		var turn_type = timeline_item.type
 		
 		if not is_instance_valid(turn_entry.entity):
-			print("TurnOrderUI: Skipping invalid entity at index ", i)
 			continue
 			
 		var icon = turn_icon_scene.instantiate()
 		container.add_child(icon)
 		
-		# Configure the icon
+		# Configure the icon based on type
 		if icon.has_method("setup_icon"):
-			var is_current_turn = (i == 0)
-			icon.setup_icon(turn_entry.entity, turn_entry.icon, is_current_turn)
-			print("TurnOrderUI: Created icon for ", turn_entry.entity.name, " (current: ", is_current_turn, ")")
-		else:
-			print("TurnOrderUI: Warning - Icon doesn't have setup_icon method")
+			var is_current = (turn_type == "current")
+			icon.setup_icon(turn_entry.entity, turn_entry.icon, is_current)
+			
+			# Apply special styling for past turns
+			if turn_type == "past":
+				icon.modulate = Color(0.7, 0.7, 0.7, 0.8)  # Slightly dimmed
+			
+			print("TurnOrderUI: Created ", turn_type, " icon for ", turn_entry.entity.name)
+		
+		icons_created += 1
 	
-	print("TurnOrderUI: UI update complete, ", container.get_child_count(), " icons created")
+	print("TurnOrderUI: Timeline update complete, ", icons_created, " icons created")
+
+# Keep the old update_ui function for compatibility but redirect to timeline
+func update_ui():
+	update_timeline_ui()
 
 func get_next_entity():
-	# Get the entity whose turn is next
+	# Get the entity whose turn is next (first in future queue)
 	if turn_queue.size() > 0:
 		return turn_queue[0].entity
 	return null
@@ -294,3 +348,12 @@ func get_next_entity():
 func get_current_turn_order():
 	# Return copy of current turn queue for debugging
 	return turn_queue.duplicate()
+
+func get_timeline_info():
+	# Debug function to get complete timeline info
+	return {
+		"past_turns": past_turns.size(),
+		"current_turn": turn_queue[0].entity.name if turn_queue.size() > 0 else "None",
+		"future_turns": turn_queue.size() - 1,
+		"total_completed": total_turns_completed
+	}
