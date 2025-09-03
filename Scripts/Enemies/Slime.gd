@@ -8,7 +8,7 @@ var Dead = false
 var attack_damage = 15  # Damage the slime deals to player
 var player_target = null  # Reference to player
 var is_attacking = false  # Track if slime is currently attacking
-var speed = 37  # Slime speed for turn order - 3x player speed (12 * 3 = 36)
+var speed = 6  # Slime speed for turn order - 3x player speed (12 * 3 = 36)
 
 func _ready():
 	progress_bar.value = health

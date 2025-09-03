@@ -53,6 +53,7 @@ func get_animation_length(animation_name: String) -> float:
 	return 1.0  # Default duration if animation not found
 
 func take_damage(damage_amount):
+	progress_bar.value = current_health - damage_amount
 	current_health -= damage_amount
 	print("Player took ", damage_amount, " damage! Health: ", current_health, "/", max_health)
 	

@@ -47,7 +47,7 @@ _data = {
 [node name="Node2D2" type="Node2D"]
 script = ExtResource("1_v1gob")
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("1_e5luo")]
+[node name="Player" parent="." instance=ExtResource("1_e5luo")]
 position = Vector2(249, 568)
 
 [node name="Slime" parent="." instance=ExtResource("3_0wjrk")]

@@ -250,8 +250,6 @@ func extend_turn_queue():
 	print("TurnOrderUI: Extended queue, now has ", turn_queue.size(), " entries")
 
 func update_timeline_ui():
-	print("TurnOrderUI: Updating timeline UI - Past: ", past_turns.size(), " Future: ", turn_queue.size())
-	
 	# Safety check - make sure we have a container
 	var container = turn_order_container
 	if not container:
@@ -272,8 +270,6 @@ func update_timeline_ui():
 	# Wait for children to actually be removed
 	await get_tree().process_frame
 	await get_tree().process_frame  # Wait an extra frame to be sure
-	
-	print("TurnOrderUI: Container cleared, creating timeline...")
 	
 	# Create combined timeline: [Past turns] + [Current turn] + [Future turns]
 	var timeline = []
@@ -308,7 +304,6 @@ func update_timeline_ui():
 	start_index = max(0, current_pos - half_visible)
 	
 	# Create icons for visible portion
-	var icons_created = 0
 	for i in range(start_index, min(timeline.size(), start_index + max_visible_turns)):
 		var timeline_item = timeline[i]
 		var turn_entry = timeline_item.entry
@@ -328,12 +323,6 @@ func update_timeline_ui():
 			# Apply special styling for past turns
 			if turn_type == "past":
 				icon.modulate = Color(0.7, 0.7, 0.7, 0.8)  # Slightly dimmed
-			
-			print("TurnOrderUI: Created ", turn_type, " icon for ", turn_entry.entity.name)
-		
-		icons_created += 1
-	
-	print("TurnOrderUI: Timeline update complete, ", icons_created, " icons created")
 
 # Keep the old update_ui function for compatibility but redirect to timeline
 func update_ui():
