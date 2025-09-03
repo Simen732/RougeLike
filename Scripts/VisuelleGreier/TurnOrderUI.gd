@@ -13,6 +13,7 @@ var entities = []
 var current_time = 0.0
 var turn_increment = 10.0
 var total_turns_completed = 0
+var combat_started = false
 
 func _ready():
 	if Global.turn_manager:
@@ -23,6 +24,7 @@ func _ready():
 		turn_order_container = get_node_or_null("HBoxContainer")
 
 func _on_combat_started():
+	combat_started = true
 	calculate_initial_turn_order()
 	call_deferred("update_timeline_ui")
 
@@ -39,7 +41,7 @@ func register_entity(entity: Node, speed: int = 10, icon_texture: Texture2D = nu
 	}
 	entities.append(entry)
 	
-	if entities.size() > 1:
+	if entities.size() > 1 and combat_started:
 		calculate_initial_turn_order()
 		call_deferred("update_ui")
 

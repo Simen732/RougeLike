@@ -78,9 +78,8 @@ func die():
 	freeze_game()
 
 func freeze_game():
-	print("Game frozen due to player death")
+	print("FREEEEEEEZE (player dead)")
 	
-	# Disable card interactions by setting a global flag
 	if Global.has_method("set_game_frozen"):
 		Global.set_game_frozen(true)
 	
@@ -122,8 +121,3 @@ func get_speed():
 func modify_speed(modifier: float):
 	speed = max(1, int(speed * modifier))  # Ensure speed doesn't go below 1
 	print("Player: Speed changed to ", speed)
-
-# Example method to temporarily double speed
-func double_speed_for_turn():
-	modify_speed(2.0)
-	print("Player: Speed doubled to ", speed, " for this fight!")
