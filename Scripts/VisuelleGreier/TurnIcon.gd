@@ -88,18 +88,5 @@ func set_current_turn_style():
 
 
 func _ready():
-	# Debug: Check if all required nodes exist
-	print("TurnIcon: _ready() - Checking scene structure:")
-	print("  - background node: ", background)
-	print("  - border node: ", border) 
-	print("  - icon_texture node: ", icon_texture)
-	
-	# Set default size
 	custom_minimum_size = Vector2(48, 48)
 	size = Vector2(48, 48)
-	
-	# Make sure background is set up correctly if it exists
-	if background:
-		background.color = Color.GRAY  # Temporary gray to test visibility
-		background.visible = true
-		print("TurnIcon: Set temporary gray background")
