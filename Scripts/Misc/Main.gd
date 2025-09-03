@@ -1,9 +1,9 @@
 extends Node2D
-@onready var progress_bar = $CharacterBody2D/ProgressBar
+@onready var progress_bar = $Player/ProgressBar
 @onready var slime = $Slime
 @onready var card_manager = $CardManager
 @onready var end_turn_button = $EndTurnButton
-@onready var player = $CharacterBody2D
+@onready var player = $Player
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -14,7 +14,7 @@ func _ready():
 		end_turn_button.connect("pressed", _on_end_turn_pressed)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 # Setup the combat scene, connecting cards to enemies

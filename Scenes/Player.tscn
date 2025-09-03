@@ -205,7 +205,6 @@ _data = {
 }
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
-position = Vector2(126, 306)
 script = ExtResource("1_kyqiw")
 
 [node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="."]

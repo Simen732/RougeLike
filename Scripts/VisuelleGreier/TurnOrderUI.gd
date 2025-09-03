@@ -89,7 +89,7 @@ func calculate_initial_turn_order():
 		
 		safety_counter += 1
 
-func _on_turn_started(entity):
+func _on_turn_started(_entity):
 	pass
 
 func _on_turn_ended(entity):
@@ -101,7 +101,7 @@ func _on_turn_ended(entity):
 		total_turns_completed += 1
 		
 		while past_turns.size() > max_past_turns:
-			var removed_turn = past_turns[0]
+			# var removed_turn = past_turns[0]
 			past_turns.remove_at(0)
 	
 	current_turn_index = past_turns.size()
@@ -225,7 +225,7 @@ func update_timeline_ui():
 	
 	var start_index = 0
 	var current_pos = past_turns.size()
-	var half_visible = max_visible_turns / 2
+	var half_visible = max_visible_turns / 2.0
 	start_index = max(0, current_pos - half_visible)
 	
 	for i in range(start_index, min(timeline.size(), start_index + max_visible_turns)):

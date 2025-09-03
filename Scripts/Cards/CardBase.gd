@@ -42,7 +42,7 @@ func _input(event):
 					position = initial_position
 					modulate = Color(1, 1, 1)
 
-func _process(delta):
+func _process(_delta):
 	if !position_initialized and position != Vector2.ZERO:
 		update_initial_position()
 		
@@ -72,7 +72,7 @@ func activate_card():
 func get_animation_data() -> Dictionary:
 	return {}
 
-func apply_effect_to_target(target):
+func apply_effect_to_target(_target):
 	pass
 
 func reset_position():

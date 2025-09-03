@@ -16,7 +16,7 @@ var card_animations = {
 @export var speed = 12  # Player speed for turn order
 var current_health = max_health	
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	pass
 	
 func _ready():
@@ -27,7 +27,7 @@ func _ready():
 	print("Player: Registered with turn manager")
 
 # Play animation based on card type
-func play_card_animation(card_type: String, animation_data: Dictionary = {}):
+func play_card_animation(card_type: String, _animation_data: Dictionary = {}):
 	if card_type in card_animations:
 		var animation_name = card_animations[card_type]
 		if animated_sprite.sprite_frames.has_animation(animation_name):
@@ -48,7 +48,7 @@ func get_animation_length(animation_name: String) -> float:
 	if animated_sprite.sprite_frames.has_animation(animation_name):
 		var sprite_frames = animated_sprite.sprite_frames
 		var frame_count = sprite_frames.get_frame_count(animation_name)
-		var speed = sprite_frames.get_animation_speed(animation_name)
+		speed = sprite_frames.get_animation_speed(animation_name)
 		return frame_count / speed
 	return 1.0  # Default duration if animation not found
 

@@ -139,5 +139,5 @@ func arrange_hand():
 			if card_instance.has_method("update_initial_position"):
 				card_instance.update_initial_position()
 
-func _on_card_activated(damage_amount):
+func _on_card_activated(_damage_amount):
 	pass
