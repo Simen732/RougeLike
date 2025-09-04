@@ -1,0 +1,163 @@
+[gd_scene load_steps=21 format=3 uid="uid://twdck2fl0lhy"]
+
+[ext_resource type="Texture2D" uid="uid://dio7h5r2kr753" path="res://animations/slime-Sheet.png" id="1_pg16i"]
+[ext_resource type="Script" uid="uid://di3aqnryhlsxr" path="res://Scripts/Enemies/slime_3.gd" id="2_amvme"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_amvme"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(0, 25, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2twfy"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(32, 25, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4od8l"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(64, 25, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q64oj"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(96, 25, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1k72i"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(128, 25, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q5s1b"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(160, 25, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ni2b"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(192, 25, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3ndn4"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(224, 25, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o367e"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(0, 50, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oapku"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(32, 50, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wmo5u"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(64, 50, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_75n3w"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(96, 50, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x7tj8"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(128, 50, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2awfl"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(0, 0, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2pk6a"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(32, 0, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_16pwf"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(64, 0, 32, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1edk2"]
+atlas = ExtResource("1_pg16i")
+region = Rect2(96, 0, 32, 25)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gt78n"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_amvme")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2twfy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4od8l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q64oj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1k72i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q5s1b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4ni2b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3ndn4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o367e")
+}],
+"loop": false,
+"name": &"Attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oapku")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wmo5u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_75n3w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x7tj8")
+}],
+"loop": false,
+"name": &"Death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2awfl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2pk6a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_16pwf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1edk2")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+modulate = Color(0, 1.105, 0.552, 1)
+texture_filter = 1
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_gt78n")
+animation = &"Idle"
+autoplay = "Idle"
+script = ExtResource("2_amvme")
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_left = -21.0
+offset_top = -13.0
+offset_right = 21.0
+offset_bottom = -5.0
+max_value = 50.0
+show_percentage = false
+
+[node name="TargetIndicator" type="Polygon2D" parent="."]
+position = Vector2(0, -17)
+rotation = 3.14159
+polygon = PackedVector2Array(0, 0, 8, 16, -8, 16)

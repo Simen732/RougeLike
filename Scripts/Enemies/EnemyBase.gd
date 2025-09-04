@@ -14,6 +14,10 @@ var player_target = null
 var is_attacking = false
 
 func _ready():
+	# Call child-specific initialization FIRST so max_health is set correctly
+	enemy_ready()
+	
+	# Now set up health and progress bar with the correct values
 	health = max_health
 	progress_bar.max_value = max_health
 	progress_bar.value = health
@@ -23,9 +27,6 @@ func _ready():
 		target_indicator.visible = false
 	
 	find_player()
-	
-	# Call child-specific initialization
-	enemy_ready()
 
 # Virtual function for child classes to override
 func enemy_ready():
@@ -44,20 +45,20 @@ func _process(_delta):
 func on_death():
 	pass
 
-func take_damage(damage_amount):
-	if Dead:
-		return
+# func take_damage(damage_amount):
+# 	if Dead:
+# 		return
 		
-	progress_bar.value -= damage_amount
-	health = progress_bar.value
+# 	progress_bar.value -= damage_amount
+# 	health = progress_bar.value
 	
-	# Flash damage color
-	modulate = Color(1, 0.5, 0.5) 
-	await get_tree().create_timer(0.15).timeout
-	modulate = Color(1, 1, 1)
+# 	# Flash damage color
+# 	modulate = Color(1, 0.5, 0.5) 
+# 	await get_tree().create_timer(0.15).timeout
+# 	modulate = Color(1, 1, 1)
 
-func _on_damage_card_card_activated(damage_amount):
-	take_damage(damage_amount)
+# func _on_damage_card_card_activated(damage_amount):
+# 	take_damage(damage_amount)
 
 func take_turn():
 	if Dead:

@@ -27,6 +27,9 @@ var master_volume: float = 1.0  # Add volume control
 # Turn manager reference
 var turn_manager: Node
 
+# Spawn manager reference
+var spawn_manager: Node
+
 # Game state
 var game_frozen: bool = false
 
@@ -35,6 +38,11 @@ func _ready():
 	turn_manager = preload("res://Scripts/CombatMechanics/TurnManager.gd").new()
 	add_child(turn_manager)
 	print("Global: TurnManager initialized")
+	
+	# Initialize spawn manager
+	spawn_manager = preload("res://Scripts/Misc/SpawnManager.gd").new()
+	add_child(spawn_manager)
+	print("Global: SpawnManager initialized")
 	
 	# Create an audio player for sound effects
 	audio_player = AudioStreamPlayer.new()

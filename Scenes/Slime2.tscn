@@ -153,10 +153,8 @@ texture_filter = 1
 position = Vector2(961, 631)
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_6wxvd")
-animation = &"Attack"
+animation = &"Idle"
 autoplay = "Idle"
-frame = 8
-frame_progress = 1.0
 script = ExtResource("2_kpgwg")
 
 [node name="ProgressBar" type="ProgressBar" parent="."]

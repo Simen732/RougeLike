@@ -19,3 +19,19 @@ func enemy_turn_behavior():
 func on_death():
 	# Could add special death effects here
 	pass
+
+
+func take_damage(damage_amount):
+	if Dead:
+		return
+		
+	progress_bar.value -= damage_amount
+	health = progress_bar.value
+	
+	# Flash damage color
+	modulate = Color(1.2, 0, 0)
+	await get_tree().create_timer(0.15).timeout
+	modulate = Color(1.658, 0., 0.) 
+
+func _on_damage_card_card_activated(damage_amount):
+	take_damage(damage_amount)
