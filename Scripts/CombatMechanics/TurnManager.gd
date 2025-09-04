@@ -15,7 +15,8 @@ var current_phase = CombatPhase.PLAYER_TURN
 var current_entity = null
 var registered_entities = []  
 var player = null
-var turn_order_ui = null  
+var turn_order_ui = null
+var combat_has_started = false  # Add flag to prevent multiple starts  
 
 func _ready():
 	current_phase = CombatPhase.PLAYER_TURN
@@ -82,7 +83,11 @@ func register_enemy(enemy_node):
 		check_and_start_combat()
 
 func check_and_start_combat():
-	if player and registered_entities.size() > 0:
+	# Only start combat once, and only when we have both player and at least one enemy
+	if not combat_has_started and player and registered_entities.size() > 0:
+		combat_has_started = true
+		print("TurnManager: Starting combat with ", registered_entities.size(), " enemies")
+		
 		emit_signal("combat_started")
 		
 		if turn_order_ui:

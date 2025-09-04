@@ -15,6 +15,7 @@ var damage_number_manager: Node2D
 # Track enemies in combat
 var enemies_in_combat = []
 var current_target = null
+var registered_enemies = []
 
 # Player reference for animations
 var player_character = null
@@ -49,6 +50,7 @@ func _ready():
 # Register an enemy when it enters combat
 func register_enemy(enemy):
 	enemies_in_combat.append(enemy)
+	registered_enemies.append(enemy)
 	# Set as current target if it's the first enemy
 	if current_target == null:
 		current_target = enemy
@@ -61,9 +63,13 @@ func register_enemy(enemy):
 # Remove enemy from combat
 func unregister_enemy(enemy):
 	enemies_in_combat.erase(enemy)
+	registered_enemies.erase(enemy)
 	# If current target was this enemy, select a new target
 	if current_target == enemy:
-		current_target = enemies_in_combat[0] if enemies_in_combat.size() > 0 else null
+		if registered_enemies.size() > 0:
+			current_target = registered_enemies[0]
+		else:
+			current_target = null
 	
 	# Also unregister from turn manager
 	if turn_manager:
@@ -169,3 +175,34 @@ func restart_game():
 func quit_game():
 	print("Global: Quitting game")
 	get_tree().quit()
+
+# Target management system
+func set_current_target(target):
+	# Ensure we have a valid target or clear if null
+	if not target:
+		clear_current_target()
+		return
+		
+	# Clear previous target indicator if switching targets
+	if current_target and current_target != target and is_instance_valid(current_target):
+		if current_target.has_method("set_targeted"):
+			current_target.set_targeted(false)
+	
+	# Set new target and show indicator
+	current_target = target
+	if current_target and current_target.has_method("set_targeted"):
+		current_target.set_targeted(true)
+	
+	print("Global: Target set to ", target.name if target else "none")
+
+func get_current_target():
+	# Validate current target is still alive and valid
+	if current_target:
+		if not is_instance_valid(current_target) or (current_target.has_method("is_dead") and current_target.is_dead()):
+			current_target = null
+	return current_target
+
+func clear_current_target():
+	if current_target and is_instance_valid(current_target) and current_target.has_method("set_targeted"):
+		current_target.set_targeted(false)
+	current_target = null

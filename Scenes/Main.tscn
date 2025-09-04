@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cs3u56q8a35hu"]
+[gd_scene load_steps=12 format=3 uid="uid://cs3u56q8a35hu"]
 
 [ext_resource type="PackedScene" uid="uid://ddbrbidvr5k5l" path="res://Scenes/Player.tscn" id="1_e5luo"]
 [ext_resource type="Script" uid="uid://brdlbvhpsov6p" path="res://Scripts/Misc/Main.gd" id="1_v1gob"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bvhieogc3kfgg" path="res://Scenes/CardManager.tscn" id="5_xebea"]
 [ext_resource type="PackedScene" uid="uid://6nlqq3pv068l" path="res://Scenes/PauseMenu.tscn" id="6_v1gob"]
 [ext_resource type="PackedScene" uid="uid://45hrtrppkaxp" path="res://Scenes/TurnOrderUI.tscn" id="7_jw32o"]
+[ext_resource type="PackedScene" uid="uid://dkb7dvtmbx3a5" path="res://Scenes/Slime2.tscn" id="8_50glp"]
 
 [sub_resource type="Animation" id="Animation_v1gob"]
 length = 0.001
@@ -50,8 +51,11 @@ script = ExtResource("1_v1gob")
 [node name="Player" parent="." instance=ExtResource("1_e5luo")]
 position = Vector2(249, 568)
 
+[node name="AnimatedSprite2D" parent="." instance=ExtResource("8_50glp")]
+position = Vector2(1523, 366)
+
 [node name="Slime" parent="." instance=ExtResource("3_0wjrk")]
-position = Vector2(1553, 531)
+position = Vector2(1250, 512)
 
 [node name="Global" type="Node2D" parent="."]
 position = Vector2(962, 552)
@@ -102,8 +106,10 @@ color = Color(0.548963, 0.548963, 0.548963, 1)
 position = Vector2(889, 361)
 
 [node name="TurnOrderUI" parent="." instance=ExtResource("7_jw32o")]
-offset_left = 538.0
+offset_left = 482.0
 offset_top = 60.0
-offset_right = 1138.0
+offset_right = 1355.0
 offset_bottom = 120.0
-grow_horizontal = 2
+
+[node name="AnimatedSprite2D2" parent="." instance=ExtResource("8_50glp")]
+position = Vector2(1510, 699)

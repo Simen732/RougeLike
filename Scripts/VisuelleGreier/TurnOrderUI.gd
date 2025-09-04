@@ -41,7 +41,9 @@ func register_entity(entity: Node, speed: int = 10, icon_texture: Texture2D = nu
 	}
 	entities.append(entry)
 	
-	if entities.size() > 1 and combat_started:
+	# Only update the turn order if combat has already started and this is not the initial setup
+	# The initial turn order will be calculated in _on_combat_started()
+	if combat_started:
 		calculate_initial_turn_order()
 		call_deferred("update_ui")
 
