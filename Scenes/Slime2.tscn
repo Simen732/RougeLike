@@ -151,7 +151,7 @@ animations = [{
 modulate = Color(1.658, 0, 0, 1)
 texture_filter = 1
 position = Vector2(961, 631)
-scale = Vector2(5, 5)
+scale = Vector2(7, 7)
 sprite_frames = SubResource("SpriteFrames_6wxvd")
 animation = &"Idle"
 autoplay = "Idle"
@@ -165,6 +165,6 @@ offset_bottom = -7.4
 show_percentage = false
 
 [node name="TargetIndicator" type="Polygon2D" parent="."]
-position = Vector2(1.00001, -14.2)
+position = Vector2(0, -17)
 rotation = 3.14159
-polygon = PackedVector2Array(0, 0, 7.60001, 16.6, -8, 16.8)
+polygon = PackedVector2Array(0, 0, 8, 16, -8, 16)

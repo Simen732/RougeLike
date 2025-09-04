@@ -6,10 +6,12 @@ class_name EnemyData
 @export var spawn_weight: int = 1  # Higher = more likely to spawn
 @export var min_encounter_level: int = 1  # Minimum level for this enemy to appear
 @export var max_count_per_encounter: int = 3  # Maximum of this enemy type per encounter
+@export var cost: int = 10  # Power/value of this enemy for encounter balancing
 
-func _init(p_name: String = "", p_scene: PackedScene = null, p_weight: int = 1, p_min_level: int = 1, p_max_count: int = 3):
+func _init(p_name: String = "", p_scene: PackedScene = null, p_weight: int = 1, p_min_level: int = 1, p_max_count: int = 3, p_cost: int = 10):
 	enemy_name = p_name
 	enemy_scene = p_scene
 	spawn_weight = p_weight
 	min_encounter_level = p_min_level
 	max_count_per_encounter = p_max_count
+	cost = p_cost

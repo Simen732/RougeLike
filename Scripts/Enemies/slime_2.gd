@@ -2,7 +2,7 @@ extends "res://Scripts/Enemies/EnemyBase.gd"
 
 func enemy_ready():
 	# Stronger slime setup
-	max_health = 150
+	max_health = 200
 	health = max_health
 	attack_damage = 25
 	speed = 3
