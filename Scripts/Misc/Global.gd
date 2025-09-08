@@ -8,7 +8,8 @@ var card_types = {
 	"SingleSlash": preload("res://Scripts/Cards/SingleSlash.gd"),
 	"DoubleSlash": preload("res://Scripts/Cards/DoubleSlash.gd"),
 	"HealCard": preload("res://Scripts/Cards/HealCard.gd"),
-	"PoisonCard": preload("res://Scripts/Cards/PoisonCard.gd")
+	"PoisonCard": preload("res://Scripts/Cards/PoisonCard.gd"),
+	"poison_slash": preload("res://Scripts/Cards/poison_slash.gd")
 }
 
 # Damage number manager reference
@@ -274,13 +275,7 @@ func reset_crit_bonuses():
 # Reset energy to max at start of turn
 func reset_energy():
 	CurrentEnergy = Max_energy
-	print("Global: Energy reset to ", CurrentEnergy, " (Max: ", Max_energy, ")")
-	
-	# Also try to update energy display directly
-	var main_scene = get_tree().current_scene
-	if main_scene and main_scene.has_method("update_energy_display"):
-		main_scene.update_energy_display()
-		print("Global: Called update_energy_display from reset_energy")
+	print("Global: Energy reset to ", CurrentEnergy)
 
 # Check if player has enough energy to play a card
 func can_afford_card(energy_cost: int) -> bool:

@@ -5,6 +5,7 @@ extends Sprite2D
 @export var energy_cost := 1  # Energy required to play this card
 var initial_position := Vector2.ZERO
 var is_playable := true 
+var is_discarded := false  # New variable to track if card is marked for discard
 var mouse_over := false  
 var position_initialized := false 
 var drag_start_mouse_pos := Vector2.ZERO
@@ -21,10 +22,10 @@ func update_initial_position():
 	position_initialized = true
 
 func _input(event):
-	if not is_playable:
-		return
-	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and Global.turn_manager.is_player_turn():
+		if not is_playable or is_discarded:
+			return
+			
 		if event.pressed:
 			var distance = get_global_mouse_position().distance_to(global_position)
 			var card_width = get_card_size().x
@@ -42,6 +43,13 @@ func _input(event):
 				else:
 					position = initial_position
 					modulate = Color(1, 1, 1)
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and Global.turn_manager.is_player_turn():
+		if event.pressed:
+			var distance = get_global_mouse_position().distance_to(global_position)
+			var card_width = get_card_size().x
+			
+			if distance < card_width / 2:
+				toggle_discard_state()
 
 func _process(_delta):
 	if !position_initialized and position != Vector2.ZERO:
@@ -57,6 +65,22 @@ func _process(_delta):
 		else:
 			modulate = Color(1.1, 1.1, 1.1)
 
+func toggle_discard_state():
+	is_discarded = !is_discarded
+	update_visual_state()
+	print("Card ", card_type_name, " discard state: ", is_discarded)
+
+func update_visual_state():
+	if is_discarded:
+		# Visual feedback for discarded cards (orange tint)
+		modulate = Color(1.0, 0.7, 0.3, 0.8)  # Orange with slight transparency
+	elif not is_playable:
+		# Visual feedback for used cards (gray)
+		modulate = Color(0.5, 0.5, 0.5)
+	else:
+		# Normal card appearance
+		modulate = Color(1, 1, 1)
+
 func activate_card():
 	if Global.is_game_frozen():
 		return
@@ -66,7 +90,7 @@ func activate_card():
 		# Flash red to indicate not enough energy
 		modulate = Color(1.5, 0.5, 0.5)
 		await get_tree().create_timer(0.2).timeout
-		modulate = Color(1, 1, 1)
+		update_visual_state()  # Return to proper visual state
 		reset_position()
 		return
 	
@@ -87,7 +111,7 @@ func activate_card():
 	reset_position()
 	
 	is_playable = false
-	modulate = Color(0.5, 0.5, 0.5)
+	update_visual_state()  # Update visual state instead of direct modulate
 
 func get_animation_data() -> Dictionary:
 	return {}
@@ -98,7 +122,7 @@ func apply_effect_to_target(_target):
 func reset_position():
 	position = initial_position
 	is_dragging = false
-	modulate = Color(1, 1, 1)
+	update_visual_state()  # Use proper visual state instead of forcing white
 
 func get_card_size() -> Vector2:
 	if texture:
@@ -109,4 +133,4 @@ func get_card_size() -> Vector2:
 	return Vector2(100, 150) * scale
 
 func is_card_playable() -> bool:
-	return is_playable
+	return is_playable and not is_discarded  # Card is not playable if discarded

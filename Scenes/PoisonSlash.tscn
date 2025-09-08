@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://do6hh8tmc2fn7"]
+
+[ext_resource type="Texture2D" uid="uid://c7kqbo1mekn4m" path="res://assets/pixelCardAssest.png" id="1_2ewy0"]
+[ext_resource type="Script" uid="uid://b85m554hhwjtd" path="res://Scripts/Cards/poison_slash.gd" id="2_mvlsu"]
+
+[node name="Sprite2D" type="Sprite2D"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_2ewy0")
+region_enabled = true
+region_rect = Rect2(133.096, 3.70965, 99.588, 128.319)
+script = ExtResource("2_mvlsu")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-8, 2)
+scale = Vector2(2.16, 2.16)
+texture = ExtResource("1_2ewy0")
+region_enabled = true
+region_rect = Rect2(540.29, 268.685, 25.41, 30.3151)
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(6.5, 6)
+scale = Vector2(2.3, 2.3)
+texture = ExtResource("1_2ewy0")
+region_enabled = true
+region_rect = Rect2(498.024, 171.685, 10.1383, 12.7452)

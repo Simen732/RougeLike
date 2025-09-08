@@ -7,6 +7,7 @@ var singleSlashCard = preload("res://Scenes/SingleSlash.tscn")
 var doubleSlashCard = preload("res://Scenes/DoubleSlash.tscn")
 var healCard = preload("res://Scenes/HealCard.tscn")
 var poisonCard = preload("res://Scenes/PoisonCard.tscn")
+var poisonSlash = preload("res://Scenes/PoisonSlash.tscn")
 var hand_node
 var deck_visual_node
 var deck_count_label
@@ -82,6 +83,8 @@ func draw_card():
 		card_instance = healCard.instantiate()
 	elif "PoisonCard" in card_type:
 		card_instance = poisonCard.instantiate()
+	elif "poison_slash" in card_type:
+		card_instance = poisonSlash.instantiate()
 	else:
 		print("Card Manager: Unknown card type: ", card_type)
 		return false
@@ -107,11 +110,13 @@ func draw_cards(count: int):
 			break
 	return cards_drawn
 
+# Remove used (grayed out) cards from hand
 func remove_used_cards():
 	var cards_to_remove = []
 	
 	for i in range(hand_node.get_child_count()):
 		var card_instance = hand_node.get_child(i)
+		# Remove cards that are either used (not playable) OR discarded
 		if card_instance.has_method("is_card_playable") and not card_instance.is_card_playable():
 			cards_to_remove.append(card_instance)
 	
@@ -122,11 +127,12 @@ func remove_used_cards():
 		card.queue_free()
 	
 	hand.clear()
-	for i in range(hand_node.get_child_count()):
-		if hand_node.get_child(i) and not hand_node.get_child(i).is_queued_for_deletion():
-			hand.append(Global.card_types["SingleSlash"].new())
+	# for i in range(hand_node.get_child_count()):
+	# 	if hand_node.get_child(i) and not hand_node.get_child(i).is_queued_for_deletion():
+	# 		hand.append(Global.card_types["SingleSlash"].new())
 	
 	arrange_hand()
+	print("Card Manager: Removed ", cards_to_remove.size(), " used/discarded cards")
 
 func end_turn():
 	if Global.is_game_frozen():

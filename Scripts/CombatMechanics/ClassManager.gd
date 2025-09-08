@@ -13,7 +13,7 @@ func initialize_classes():
 		"A balanced fighter with good health and standard attacks.",
 		null,  # TODO: Add class icon
 		100,   # Base health
-		24     # Base speed
+		12     # Base speed
 	)
 	warrior_class.starting_cards = {
 		"SingleSlash": 15,
@@ -51,6 +51,7 @@ func initialize_classes():
 		"DoubleSlash": 3
 		# TODO: Add defensive cards when created
 	}
+	
 	guardian_class.special_abilities = ["Shield Wall", "Taunt"]
 	guardian_class.passive_effects = {"damage_reduction": 0.1}
 	guardian_class.sprite_scale = Vector2(0.7, 0.7)  # Bigger, tankier looking
@@ -63,11 +64,13 @@ func initialize_classes():
 		100,   # Standard health
 		12     # Higher speed
 	)
+
 	samurai_class.starting_cards = {
-		"SingleSlash": 7,
+		"SingleSlash": 5,
 		"DoubleSlash": 5,
 		"HealCard": 3,
-		"PoisonCard": 30
+		"PoisonCard": 5,
+		"poison_slash": 5
 	}
 	samurai_class.special_abilities = ["Quick Strike", "Dodge"]
 	samurai_class.passive_effects = {"crit_chance": 0.1}

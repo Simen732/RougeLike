@@ -111,7 +111,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_io2bw")
 }],
-"loop": true,
+"loop": false,
 "name": &"Death",
 "speed": 5.0
 }, {
@@ -141,7 +141,8 @@ scale = Vector2(7, 7)
 sprite_frames = SubResource("SpriteFrames_6wxvd")
 animation = &"Death"
 autoplay = "Idle"
-frame_progress = 0.00145936
+frame = 3
+frame_progress = 1.0
 script = ExtResource("2_kpgwg")
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
