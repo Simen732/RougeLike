@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://c7kqbo1mekn4m" path="res://assets/pixelCardAssest.png" id="1_w2la5"]
 
 [node name="DoubleSlash" type="Sprite2D"]
+texture_filter = 1
 scale = Vector2(2, 2)
 texture = ExtResource("1_w2la5")
 region_enabled = true
@@ -12,6 +13,14 @@ script = ExtResource("1")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_w2la5")
+region_enabled = true
+region_rect = Rect2(542, 265.5, 22, 27.5848)
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+texture_filter = 1
+rotation = 4.71239
 scale = Vector2(2, 2)
 texture = ExtResource("1_w2la5")
 region_enabled = true

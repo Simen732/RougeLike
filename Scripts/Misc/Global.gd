@@ -6,7 +6,9 @@ var MAX_HAND_SIZE = 7  # Maximum cards in hand
 # Global references and configuration
 var card_types = {
 	"SingleSlash": preload("res://Scripts/Cards/SingleSlash.gd"),
-	"DoubleSlash": preload("res://Scripts/Cards/DoubleSlash.gd")
+	"DoubleSlash": preload("res://Scripts/Cards/DoubleSlash.gd"),
+	"HealCard": preload("res://Scripts/Cards/HealCard.gd"),
+	"PoisonCard": preload("res://Scripts/Cards/PoisonCard.gd")
 }
 
 # Damage number manager reference
@@ -30,8 +32,21 @@ var turn_manager: Node
 # Spawn manager reference
 var spawn_manager: Node
 
+# Class manager reference
+var class_manager: Node
+
 # Game state
 var game_frozen: bool = false
+
+# Simple Energy System
+var Max_energy: int = 3
+var CurrentEnergy: int = 3
+
+# Critical Hit System
+var base_crit_chance: float = 0.05  # 5% base crit chance
+var base_crit_multiplier: float = 2  # 100% more effect on crit
+var player_crit_chance_bonus: float = 0.0  # Additional crit chance from class/items
+var player_crit_multiplier_bonus: float = 0.0  # Additional crit multiplier from class/items
 
 func _ready():
 	# Initialize turn manager first
@@ -43,6 +58,11 @@ func _ready():
 	spawn_manager = preload("res://Scripts/Misc/SpawnManager.gd").new()
 	add_child(spawn_manager)
 	print("Global: SpawnManager initialized")
+	
+	# Initialize class manager
+	class_manager = preload("res://Scripts/CombatMechanics/ClassManager.gd").new()
+	add_child(class_manager)
+	print("Global: ClassManager initialized")
 	
 	# Create an audio player for sound effects
 	audio_player = AudioStreamPlayer.new()
@@ -72,10 +92,23 @@ func register_enemy(enemy):
 func unregister_enemy(enemy):
 	enemies_in_combat.erase(enemy)
 	registered_enemies.erase(enemy)
-	# If current target was this enemy, select a new target
+	
+	# If current target was this enemy, clear it and hide its indicator
 	if current_target == enemy:
+		# Hide the target indicator before clearing
+		if enemy and is_instance_valid(enemy) and enemy.has_method("set_targeted"):
+			enemy.set_targeted(false)
+		
+		# Select a new target from remaining enemies
 		if registered_enemies.size() > 0:
-			current_target = registered_enemies[0]
+			# Find the first alive enemy
+			for remaining_enemy in registered_enemies:
+				if remaining_enemy and is_instance_valid(remaining_enemy) and remaining_enemy.has_method("is_dead") and not remaining_enemy.is_dead():
+					current_target = remaining_enemy
+					break
+			# If no alive enemies found, clear current_target
+			if current_target == enemy:
+				current_target = null
 		else:
 			current_target = null
 	
@@ -93,65 +126,6 @@ func register_player(player):
 	if turn_manager:
 		turn_manager.register_player(player)
 		print("Global: Player registered with turn manager")
-
-# Get the sound file path for a specific card type - automatically detect files
-func get_sound_path_for_card_type(card_type: String) -> String:
-	if card_type == "DamageCard":
-		# Look for any audio file in the sound effects folder
-		var dir = DirAccess.open("res://Sound effects/")
-		if dir:
-			dir.list_dir_begin()
-			var file_name = dir.get_next()
-			while file_name != "":
-				var lower_name = file_name.to_lower()
-				if (lower_name.ends_with(".ogg") or lower_name.ends_with(".wav") or 
-					lower_name.ends_with(".mp3") or lower_name.ends_with(".m4a")):
-					var full_path = "res://Sound effects/" + file_name
-					print("Global: Found sound file: ", full_path)
-					return full_path
-				file_name = dir.get_next()
-			dir.list_dir_end()
-		else:
-			print("Global: Could not access Sound effects directory")
-	
-	return ""
-
-# Play sound effect for specific card types
-func play_card_sound_effect(card_type: String, sound_data: Dictionary = {}):
-	var sound_path = get_sound_path_for_card_type(card_type)
-	if sound_path != "":
-		print("Global: Attempting to load sound: ", sound_path)
-		var sound = load(sound_path)
-		if sound:
-			audio_player.stream = sound
-			# Set volume if provided in sound_data
-			if "sound_volume" in sound_data:
-				audio_player.volume_db = linear_to_db(sound_data.sound_volume)
-			audio_player.play()
-			print("Global: Successfully playing sound effect for card type: ", card_type)
-		else:
-			print("Global: Failed to load sound effect: ", sound_path)
-	else:
-		print("Global: No sound effect file found for card type: ", card_type)
-
-# Trigger player animation based on card type
-func trigger_player_animation(card_type: String, animation_data: Dictionary = {}):
-	if player_character and player_character.has_method("play_card_animation"):
-		player_character.play_card_animation(card_type, animation_data)
-		print("Global: Triggered player animation for card type: ", card_type)
-	
-	# Also play sound effect
-	play_card_sound_effect(card_type, animation_data)
-
-# Optional: Add volume control function
-func set_sound_volume(volume: float):
-	master_volume = clamp(volume, 0.0, 1.0)
-	audio_player.volume_db = linear_to_db(master_volume)
-
-# Convenience method to show damage numbers
-func show_damage_number(damage: int, world_position: Vector2, color: Color = Color.RED):
-	if damage_number_manager:
-		damage_number_manager.show_damage(damage, world_position, color)
 
 # Game state management
 func set_game_frozen(frozen: bool):
@@ -214,3 +188,117 @@ func clear_current_target():
 	if current_target and is_instance_valid(current_target) and current_target.has_method("set_targeted"):
 		current_target.set_targeted(false)
 	current_target = null
+
+# Convenience method to show damage numbers
+func show_damage_number(damage: int, world_position: Vector2, color: Color = Color.RED):
+	if damage_number_manager:
+		damage_number_manager.show_damage(damage, world_position, color)
+
+# Trigger player animation based on card type
+func trigger_player_animation(card_type: String, animation_data: Dictionary = {}):
+	if player_character and player_character.has_method("play_card_animation"):
+		player_character.play_card_animation(card_type, animation_data)
+		print("Global: Triggered player animation for card type: ", card_type)
+
+# Critical Hit System Functions
+
+# Calculate if an effect should crit based on current crit chance
+func calculate_critical_hit() -> bool:
+	var total_crit_chance = base_crit_chance + player_crit_chance_bonus
+	var roll = randf()
+	var is_crit = roll < total_crit_chance
+	
+	if is_crit:
+		print("Global: Critical hit! (rolled ", roll, " vs ", total_crit_chance, ")")
+	
+	return is_crit
+
+# Get the total critical multiplier
+func get_critical_multiplier() -> float:
+	return base_crit_multiplier + player_crit_multiplier_bonus
+
+# Apply critical hit effects to any numeric value
+func apply_critical_effect(base_value: float, effect_type: String = "damage") -> Dictionary:
+	var is_crit = calculate_critical_hit()
+	var final_value = base_value
+	
+	if is_crit:
+		var multiplier = get_critical_multiplier()
+		final_value = base_value * multiplier
+		
+		print("Global: Critical ", effect_type, "! ", base_value, " -> ", final_value, " (x", multiplier, ")")
+	
+	return {
+		"value": final_value,
+		"is_critical": is_crit,
+		"multiplier": get_critical_multiplier() if is_crit else 1.0,
+		"original_value": base_value
+	}
+
+# Apply critical hit to duration-based effects (status conditions, buffs, etc.)
+func apply_critical_duration(base_duration: float, effect_name: String = "effect") -> Dictionary:
+	var is_crit = calculate_critical_hit()
+	var final_duration = base_duration
+	
+	if is_crit:
+		# For durations, we add the crit multiplier as extra turns/seconds
+		var bonus_duration = base_duration * (get_critical_multiplier() - 1.0)
+		final_duration = base_duration + bonus_duration
+		
+		print("Global: Critical ", effect_name, " duration! ", base_duration, " -> ", final_duration, " turns")
+	
+	return {
+		"duration": final_duration,
+		"is_critical": is_crit,
+		"multiplier": get_critical_multiplier() if is_crit else 1.0,
+		"original_duration": base_duration
+	}
+
+# Modify player's crit stats (called by classes, items, etc.)
+func modify_crit_chance(bonus: float):
+	player_crit_chance_bonus += bonus
+	player_crit_chance_bonus = clamp(player_crit_chance_bonus, 0.0, 0.95)  # Cap at 95%
+	print("Global: Crit chance bonus set to ", player_crit_chance_bonus, " (total: ", (base_crit_chance + player_crit_chance_bonus) * 100, "%)")
+
+func modify_crit_multiplier(bonus: float):
+	player_crit_multiplier_bonus += bonus
+	print("Global: Crit multiplier bonus set to ", player_crit_multiplier_bonus, " (total: ", base_crit_multiplier + player_crit_multiplier_bonus, "x)")
+
+func reset_crit_bonuses():
+	player_crit_chance_bonus = 0.0
+	player_crit_multiplier_bonus = 0.0
+	print("Global: Reset crit bonuses to defaults")
+
+# Simple Energy System Functions
+
+# Reset energy to max at start of turn
+func reset_energy():
+	CurrentEnergy = Max_energy
+	print("Global: Energy reset to ", CurrentEnergy, " (Max: ", Max_energy, ")")
+	
+	# Also try to update energy display directly
+	var main_scene = get_tree().current_scene
+	if main_scene and main_scene.has_method("update_energy_display"):
+		main_scene.update_energy_display()
+		print("Global: Called update_energy_display from reset_energy")
+
+# Check if player has enough energy to play a card
+func can_afford_card(energy_cost: int) -> bool:
+	return CurrentEnergy >= energy_cost
+
+# Spend energy when playing a card
+func spend_energy(energy_cost: int) -> bool:
+	if can_afford_card(energy_cost):
+		CurrentEnergy -= energy_cost
+		print("Global: Spent ", energy_cost, " energy. Remaining: ", CurrentEnergy)
+		return true
+	else:
+		print("Global: Not enough energy! Need ", energy_cost, ", have ", CurrentEnergy)
+		return false
+
+# Get current energy values
+func get_current_energy() -> int:
+	return CurrentEnergy
+
+func get_max_energy() -> int:
+	return Max_energy

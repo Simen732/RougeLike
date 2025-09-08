@@ -3,6 +3,7 @@ extends Node2D
 @onready var card_manager = $CardManager
 @onready var end_turn_button = $EndTurnButton
 @onready var player = $Player
+@onready var energy_label = $Energy  # Reference to the energy label
 
 var enemy_spawners = []
 
@@ -13,6 +14,9 @@ func _ready():
 	# Connect the end turn button
 	if end_turn_button:
 		end_turn_button.connect("pressed", _on_end_turn_pressed)
+	
+	# Connect energy system to UI
+	setup_energy_ui()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -81,3 +85,16 @@ func _on_end_turn_pressed():
 	print("Main: End turn button pressed")
 	if card_manager:
 		card_manager.end_turn()
+
+# Setup energy UI connection
+func setup_energy_ui():
+	# Just update energy display initially - no signals needed
+	update_energy_display()
+	print("Main: Energy UI initialized")
+
+# Update the energy label text
+func update_energy_display():
+	if energy_label:
+		energy_label.text = "Energy: " + str(Global.get_current_energy()) + "/" + str(Global.get_max_energy())
+	else:
+		print("Main: Energy label not found!")

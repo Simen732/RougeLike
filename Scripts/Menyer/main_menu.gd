@@ -12,7 +12,7 @@ func _ready():
 
 func _on_startButton_down():
     print("Start button pressed")
-    get_tree().change_scene_to_file("res://Scenes/Main.tscn")
+    get_tree().change_scene_to_file("res://Scenes/ClassSelection.tscn")
 
 func _on_continueButton_down():
     print("Continue button pressed")

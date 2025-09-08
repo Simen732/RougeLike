@@ -13,6 +13,9 @@ var Dead = false
 var player_target = null
 var is_attacking = false
 
+# Simple status effect system
+var status_effects = {}  # {"effect_name": {"damage_per_stack": int, "stacks": int, "duration": int}}
+
 func _ready():
 	# Call child-specific initialization FIRST so max_health is set correctly
 	enemy_ready()
@@ -34,6 +37,10 @@ func enemy_ready():
 
 func _process(_delta):
 	if progress_bar.value < 1 and !Dead:
+		# Hide target indicator immediately when dying
+		if target_indicator:
+			target_indicator.visible = false
+		
 		animated_sprite_2d.play("Death")
 		Dead = true
 		Global.unregister_enemy(self)
@@ -45,31 +52,85 @@ func _process(_delta):
 func on_death():
 	pass
 
-# func take_damage(damage_amount):
-# 	if Dead:
-# 		return
+func take_damage(damage_amount):
+	if Dead:
+		return
 		
-# 	progress_bar.value -= damage_amount
-# 	health = progress_bar.value
+	progress_bar.value -= damage_amount
+	health = progress_bar.value
 	
-# 	# Flash damage color
-# 	modulate = Color(1, 0.5, 0.5) 
-# 	await get_tree().create_timer(0.15).timeout
-# 	modulate = Color(1, 1, 1)
+	# Check if this damage killed the enemy
+	if health <= 0:
+		if target_indicator:
+			target_indicator.visible = false
+	
+	# Flash damage color
+	modulate = Color(1, 0.5, 0.5) 
+	await get_tree().create_timer(0.15).timeout
+	modulate = Color(1, 1, 1)
 
-# func _on_damage_card_card_activated(damage_amount):
-# 	take_damage(damage_amount)
+func _on_damage_card_card_activated(damage_amount):
+	take_damage(damage_amount)
 
 func take_turn():
 	if Dead:
 		Global.turn_manager.end_current_enemy_turn()
 		return
 	
-	# Call child-specific turn behavior
+	# Call child-specific turn behavior (poison processing moved to player turn end)
 	enemy_turn_behavior()
 	
 	await get_tree().create_timer(1.0).timeout
 	Global.turn_manager.end_current_enemy_turn()
+
+# Apply a status effect to this enemy
+func apply_status_effect(effect_name: String, damage_per_turn: int, duration: int):
+	if effect_name in status_effects:
+		# Effect already exists - add stack and reset duration
+		var existing_effect = status_effects[effect_name]
+		existing_effect.stacks += 1
+		existing_effect.duration = duration  # Reset duration to new value
+		print("EnemyBase: Added ", effect_name, " stack to ", name, " (now ", existing_effect.stacks, " stacks, ", existing_effect.damage_per_stack, " dmg/stack) for ", duration, " turns")
+	else:
+		# New effect - create with 1 stack
+		status_effects[effect_name] = {
+			"damage_per_stack": damage_per_turn,
+			"stacks": 1,
+			"duration": duration
+		}
+		print("EnemyBase: Applied ", effect_name, " (", damage_per_turn, " dmg/stack, 1 stack) for ", duration, " turns to ", name)
+
+# Process all active status effects
+func process_status_effects():
+	var effects_to_remove = []
+	
+	for effect_name in status_effects:
+		var effect = status_effects[effect_name]
+		
+		# Calculate total damage (damage per stack × number of stacks)
+		var total_damage = effect.damage_per_stack * effect.stacks
+		
+		# Apply damage
+		if total_damage > 0:
+			take_damage(total_damage)
+			print("EnemyBase: ", name, " takes ", total_damage, " ", effect_name, " damage (", effect.stacks, " stacks × ", effect.damage_per_stack, " dmg/stack, ", effect.duration, " turns left)")
+			
+			# Show status damage number
+			if Global.damage_number_manager:
+				var status_color = Color.PURPLE if effect_name == "poison" else Color.ORANGE
+				Global.show_damage_number(total_damage, global_position, status_color)
+		
+		# Reduce duration
+		effect.duration -= 1
+		
+		# Mark for removal if duration is over
+		if effect.duration <= 0:
+			effects_to_remove.append(effect_name)
+			print("EnemyBase: ", effect_name, " effect expired on ", name, " (was ", effect.stacks, " stacks)")
+	
+	# Remove expired effects
+	for effect_name in effects_to_remove:
+		status_effects.erase(effect_name)
 
 # Virtual function for child classes to override
 func enemy_turn_behavior():

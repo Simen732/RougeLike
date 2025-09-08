@@ -105,6 +105,14 @@ func unregister_enemy(enemy_node):
 			start_player_turn()
 
 func start_player_turn():
+	# Always reset energy when player turn starts, regardless of previous turn
+	Global.reset_energy()
+	
+	# Always update energy display when player turn starts
+	var main_scene = get_tree().current_scene
+	if main_scene.has_method("update_energy_display"):
+		main_scene.update_energy_display()
+	
 	if current_phase == CombatPhase.PLAYER_TURN:
 		return  
 		
@@ -120,6 +128,9 @@ func end_player_turn():
 		
 	if current_phase != CombatPhase.PLAYER_TURN:
 		return
+	
+	# Process status effects on all enemies at the end of player turn
+	process_all_status_effects()
 		
 	emit_signal("turn_ended", player)
 	
@@ -134,6 +145,13 @@ func end_player_turn():
 			start_enemy_turns()
 		else:
 			start_player_turn()
+
+# Process status effects on all enemies
+func process_all_status_effects():
+	print("TurnManager: Processing status effects for all enemies at end of player turn")
+	for enemy in registered_entities:
+		if enemy and is_instance_valid(enemy) and enemy.has_method("process_status_effects") and not enemy.is_dead():
+			enemy.process_status_effects()
 
 func start_entity_turn(entity):
 	current_phase = CombatPhase.ENEMY_TURN if entity != player else CombatPhase.PLAYER_TURN

@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjiojajr3ni3y"]
+
+[ext_resource type="Texture2D" uid="uid://c7kqbo1mekn4m" path="res://assets/pixelCardAssest.png" id="1_ryim2"]
+[ext_resource type="Script" uid="uid://bqw8as3ls385w" path="res://Scripts/Cards/HealCard.gd" id="2_healcard"]
+
+[node name="HealCard" type="Sprite2D"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_ryim2")
+region_enabled = true
+region_rect = Rect2(361.505, 0, 107.495, 137.028)
+script = ExtResource("2_healcard")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, 1.90735e-06)
+scale = Vector2(4.78333, 4.78333)
+texture = ExtResource("1_ryim2")
+region_enabled = true
+region_rect = Rect2(463.306, 154.045, 15.7025, 17.3554)

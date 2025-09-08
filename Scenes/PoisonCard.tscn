@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2w1xt6rlic83"]
+
+[ext_resource type="Texture2D" uid="uid://c7kqbo1mekn4m" path="res://assets/pixelCardAssest.png" id="1_nedmp"]
+[ext_resource type="Script" uid="uid://3xmhxetrgktl" path="res://Scripts/Cards/PoisonCard.gd" id="2_8t1x1"]
+
+[node name="Sprite2D" type="Sprite2D"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_nedmp")
+region_enabled = true
+region_rect = Rect2(360.204, 1.3331, 108.796, 134.667)
+script = ExtResource("2_8t1x1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(6, 0)
+scale = Vector2(4.88462, 4.88462)
+texture = ExtResource("1_nedmp")
+region_enabled = true
+region_rect = Rect2(496.764, 170.107, 13.5474, 14.6763)

@@ -105,25 +105,37 @@ offset_right = 1355.0
 offset_bottom = 120.0
 
 [node name="EnemySpawner1" type="Node2D" parent="."]
+visible = false
 position = Vector2(1615, 359)
 script = ExtResource("7_50glp")
 
 [node name="EnemySpawner2" type="Node2D" parent="."]
+visible = false
 position = Vector2(1392, 459)
 script = ExtResource("7_50glp")
 spawner_id = 1
 
 [node name="EnemySpawner3" type="Node2D" parent="."]
+visible = false
 position = Vector2(1630, 542)
 script = ExtResource("7_50glp")
 spawner_id = 2
 
 [node name="EnemySpawner4" type="Node2D" parent="."]
+visible = false
 position = Vector2(1418, 663)
 script = ExtResource("7_50glp")
 spawner_id = 3
 
 [node name="EnemySpawner5" type="Node2D" parent="."]
+visible = false
 position = Vector2(1616, 708)
 script = ExtResource("7_50glp")
 spawner_id = 4
+
+[node name="Energy" type="Label" parent="."]
+offset_left = 174.0
+offset_top = 806.0
+offset_right = 339.0
+offset_bottom = 829.0
+text = "This Should not show"

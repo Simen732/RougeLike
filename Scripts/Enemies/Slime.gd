@@ -21,10 +21,17 @@ func enrage():
 
 func take_damage(damage_amount):
 	if Dead:
+		if target_indicator:
+			target_indicator.visible = false
 		return
 		
 	progress_bar.value -= damage_amount
 	health = progress_bar.value
+	
+	# Check if this damage killed the enemy
+	if health <= 0:
+		if target_indicator:
+			target_indicator.visible = false
 	
 	# Flash damage color
 	modulate = Color(1, 0.5, 0.5) 

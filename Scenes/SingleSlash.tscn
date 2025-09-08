@@ -4,8 +4,17 @@
 [ext_resource type="Script" uid="uid://cvrh11hs3yoo2" path="res://Scripts/Cards/SingleSlash.gd" id="2_pfo7l"]
 
 [node name="Sprite2D" type="Sprite2D"]
+texture_filter = 1
 scale = Vector2(2, 2)
 texture = ExtResource("1_24dwh")
 region_enabled = true
 region_rect = Rect2(130.793, 4.25191, 102.169, 126.844)
 script = ExtResource("2_pfo7l")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0.5, 0.5)
+scale = Vector2(3.28947, 3.28947)
+texture = ExtResource("1_24dwh")
+region_enabled = true
+region_rect = Rect2(542.025, 270.202, 19.6276, 21.3801)

@@ -5,6 +5,8 @@ var hand = []
 var discard = []
 var singleSlashCard = preload("res://Scenes/SingleSlash.tscn")
 var doubleSlashCard = preload("res://Scenes/DoubleSlash.tscn")
+var healCard = preload("res://Scenes/HealCard.tscn")
+var poisonCard = preload("res://Scenes/PoisonCard.tscn")
 var hand_node
 var deck_visual_node
 var deck_count_label
@@ -23,13 +25,21 @@ func draw_starting_hand():
 		draw_card()
 
 func initialize_deck():
-	for i in range(15):
-		add_card_to_deck(Global.card_types["SingleSlash"].new())
+	# Get starting deck from class manager
+	var starting_deck = Global.class_manager.get_starting_deck()
 	
-	for i in range(5):
-		add_card_to_deck(Global.card_types["DoubleSlash"].new())
+	for card_type in starting_deck:
+		var count = starting_deck[card_type]
+		
+		# Add cards of this type to deck
+		if card_type in Global.card_types:
+			for i in range(count):
+				add_card_to_deck(Global.card_types[card_type].new())
+		else:
+			print("Card Manager: Unknown card type in starting deck: ", card_type)
 	
 	shuffle_deck()
+	print("Card Manager: Deck initialized with ", deck.size(), " cards based on selected class")
 
 func shuffle_deck():
 	deck.shuffle()
@@ -68,7 +78,12 @@ func draw_card():
 		card_instance = singleSlashCard.instantiate()
 	elif "DoubleSlash" in card_type: 
 		card_instance = doubleSlashCard.instantiate()
+	elif "HealCard" in card_type:
+		card_instance = healCard.instantiate()
+	elif "PoisonCard" in card_type:
+		card_instance = poisonCard.instantiate()
 	else:
+		print("Card Manager: Unknown card type: ", card_type)
 		return false
 	
 	hand_node.add_child(card_instance)

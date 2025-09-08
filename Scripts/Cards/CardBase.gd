@@ -2,6 +2,7 @@ extends Sprite2D
 
 @export var activation_threshold := 300 
 @export var card_type_name := "BaseCard" 
+@export var energy_cost := 1  # Energy required to play this card
 var initial_position := Vector2.ZERO
 var is_playable := true 
 var mouse_over := false  
@@ -60,10 +61,29 @@ func activate_card():
 	if Global.is_game_frozen():
 		return
 	
+	# Check if player has enough energy
+	if not Global.can_afford_card(energy_cost):
+		# Flash red to indicate not enough energy
+		modulate = Color(1.5, 0.5, 0.5)
+		await get_tree().create_timer(0.2).timeout
+		modulate = Color(1, 1, 1)
+		reset_position()
+		return
+	
+	# Spend the energy
+	if not Global.spend_energy(energy_cost):
+		reset_position()
+		return
+	
+	# Update energy display
+	var main_scene = get_tree().current_scene
+	if main_scene.has_method("update_energy_display"):
+		main_scene.update_energy_display()
+	
 	Global.trigger_player_animation(card_type_name, get_animation_data())
 	
-	if Global.current_target != null:
-		apply_effect_to_target(Global.current_target)
+	# Always call apply_effect_to_target, let the card decide if it needs a target
+	apply_effect_to_target(Global.current_target)
 	reset_position()
 	
 	is_playable = false

@@ -145,7 +145,7 @@ modulate = Color(0, 1.105, 0.552, 1)
 texture_filter = 1
 scale = Vector2(3, 3)
 sprite_frames = SubResource("SpriteFrames_gt78n")
-animation = &"Idle"
+animation = &"Death"
 autoplay = "Idle"
 script = ExtResource("2_amvme")
 
