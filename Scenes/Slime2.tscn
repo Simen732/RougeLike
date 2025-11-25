@@ -146,13 +146,14 @@ frame_progress = 1.0
 script = ExtResource("2_kpgwg")
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
-offset_left = -38.0
-offset_top = -13.4
-offset_right = 41.0
-offset_bottom = -7.4
+offset_left = -12.2857
+offset_top = -11.8571
+offset_right = 12.7143
+offset_bottom = -7.85714
 show_percentage = false
 
 [node name="TargetIndicator" type="Polygon2D" parent="."]
-position = Vector2(0, -17)
+position = Vector2(0.428589, -3.28571)
 rotation = 3.14159
+scale = Vector2(0.243753, 0.243753)
 polygon = PackedVector2Array(0, 0, 8, 16, -8, 16)

@@ -16,10 +16,6 @@ func enemy_turn_behavior():
 		if player_target:
 			attack_player()
 
-func on_death():
-	# Could add special death effects here
-	pass
-
 
 func take_damage(damage_amount):
 	if Dead:

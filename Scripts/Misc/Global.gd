@@ -9,8 +9,11 @@ var card_types = {
 	"DoubleSlash": preload("res://Scripts/Cards/DoubleSlash.gd"),
 	"HealCard": preload("res://Scripts/Cards/HealCard.gd"),
 	"PoisonCard": preload("res://Scripts/Cards/PoisonCard.gd"),
-	"poison_slash": preload("res://Scripts/Cards/poison_slash.gd")
+	"poison_slash": preload("res://Scripts/Cards/poison_slash.gd"),
+	"SimpleBlock": preload("res://Scripts/Cards/SimpleBlock.gd")
 }
+
+var current_deck = []
 
 # Damage number manager reference
 var damage_number_manager: Node2D
@@ -44,11 +47,13 @@ var Max_energy: int = 3
 var CurrentEnergy: int = 3
 
 # Critical Hit System
-var base_crit_chance: float = 0.05  # 5% base crit chance
-var base_crit_multiplier: float = 2  # 100% more effect on crit
+var base_crit_chance: float = 1  # 100% base crit chance
+var base_crit_multiplier: float = 20  # 2000% more effect on crit
 var player_crit_chance_bonus: float = 0.0  # Additional crit chance from class/items
 var player_crit_multiplier_bonus: float = 0.0  # Additional crit multiplier from class/items
 
+var cards_at_combat_start = 4 #Begge burde være selforklarende lowkey
+var cards_per_round = 3 
 func _ready():
 	# Initialize turn manager first
 	turn_manager = preload("res://Scripts/CombatMechanics/TurnManager.gd").new()

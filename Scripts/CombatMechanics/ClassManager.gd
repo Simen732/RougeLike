@@ -16,7 +16,8 @@ func initialize_classes():
 		12     # Base speed
 	)
 	warrior_class.starting_cards = {
-		"SingleSlash": 15,
+		"SingleSlash": 10,
+		"SimpleBlock": 5,
 		"DoubleSlash": 5
 	}
 	warrior_class.special_abilities = ["Battle Stance"]
@@ -32,6 +33,7 @@ func initialize_classes():
 	)
 	berserker_class.starting_cards = {
 		"SingleSlash": 10,
+		"SimpleBlock": 5,
 		"DoubleSlash": 10  # More aggressive cards
 	}
 	berserker_class.special_abilities = ["Rage", "Bloodlust"]
@@ -47,16 +49,16 @@ func initialize_classes():
 		8      # Lower speed
 	)
 	guardian_class.starting_cards = {
-		"SingleSlash": 12,
+		"SingleSlash": 10,
+		"SimpleBlock": 5,
 		"DoubleSlash": 3
-		# TODO: Add defensive cards when created
 	}
 	
 	guardian_class.special_abilities = ["Shield Wall", "Taunt"]
 	guardian_class.passive_effects = {"damage_reduction": 0.1}
 	guardian_class.sprite_scale = Vector2(0.7, 0.7)  # Bigger, tankier looking
 
-		# Create "Samurai" class (example of agile class)
+	# Create "Samurai" class (example of agile class)
 	var samurai_class = PlayerClass.new(
 		"Samurai",
 		"Fast and precise. Excels at dealing damage quickly.",
@@ -66,7 +68,8 @@ func initialize_classes():
 	)
 
 	samurai_class.starting_cards = {
-		"SingleSlash": 5,
+		"SingleSlash": 10,
+		"SimpleBlock": 5,
 		"DoubleSlash": 5,
 		"HealCard": 3,
 		"PoisonCard": 5,
@@ -107,6 +110,7 @@ func get_starting_deck() -> Dictionary:
 	else:
 		# Default deck
 		return {
-			"SingleSlash": 15,
+			"SingleSlash": 10,
+			"SimpleBlock": 5,
 			"DoubleSlash": 5
 		}

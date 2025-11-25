@@ -151,13 +151,14 @@ script = ExtResource("2_amvme")
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
 offset_left = -21.0
-offset_top = -13.0
+offset_top = -22.3333
 offset_right = 21.0
-offset_bottom = -5.0
+offset_bottom = -14.3333
 max_value = 50.0
 show_percentage = false
 
 [node name="TargetIndicator" type="Polygon2D" parent="."]
-position = Vector2(0, -17)
+position = Vector2(0.666667, -5.66667)
 rotation = 3.14159
+scale = Vector2(0.391602, 0.391602)
 polygon = PackedVector2Array(0, 0, 8, 16, -8, 16)

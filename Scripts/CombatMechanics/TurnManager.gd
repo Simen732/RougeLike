@@ -16,7 +16,7 @@ var current_entity = null
 var registered_entities = []  
 var player = null
 var turn_order_ui = null
-var combat_has_started = false  # Add flag to prevent multiple starts  
+var combat_has_started = false 
 
 func _ready():
 	current_phase = CombatPhase.PLAYER_TURN
@@ -83,7 +83,6 @@ func register_enemy(enemy_node):
 		check_and_start_combat()
 
 func check_and_start_combat():
-	# Only start combat once, and only when we have both player and at least one enemy
 	if not combat_has_started and player and registered_entities.size() > 0:
 		combat_has_started = true
 		print("TurnManager: Starting combat with ", registered_entities.size(), " enemies")
@@ -101,14 +100,58 @@ func unregister_enemy(enemy_node):
 		if turn_order_ui:
 			turn_order_ui.unregister_entity(enemy_node)
 		
-		if current_phase == CombatPhase.ENEMY_TURN and registered_entities.is_empty():
+		if registered_entities.is_empty():
+			print("TurnManager: All enemies defeated - Victory!")
+			handle_victory()
+		elif current_phase == CombatPhase.ENEMY_TURN:
 			start_player_turn()
 
+func handle_victory():
+	Global.set_game_frozen(true)
+	
+	var main_scene = get_tree().current_scene
+	var victory_screen = main_scene.get_node_or_null("CanvasLayer/VictoryScreen")
+	
+	if victory_screen:
+		victory_screen.visible = true
+		get_tree().current_scene.get_node("CanvasModulate").visible = true
+		
+		if not victory_screen.is_connected("continue_pressed", _on_victory_continue):
+			victory_screen.connect("continue_pressed", _on_victory_continue)
+		
+		if victory_screen.has_method("show_victory_screen"):
+			victory_screen.show_victory_screen()
+	else:
+		print("TurnManager: VictoryScreen node not found in scene!")
+		print("TurnManager: Expected path: CanvasLayer/VictoryScreen")
+
+func _on_victory_continue():
+	print("TurnManager: Victory continue pressed - transitioning to next encounter")
+	
+	get_tree().current_scene.get_node("CanvasModulate").visible = false
+	Global.set_game_frozen(false)
+	
+	transition_to_next_encounter()
+
+func transition_to_next_encounter():
+
+	combat_has_started = false
+	registered_entities.clear()
+	player = null
+	turn_order_ui = null
+	current_phase = CombatPhase.PLAYER_TURN
+	Global.reset_energy()
+
+	get_tree().reload_current_scene()
+
 func start_player_turn():
-	# Always reset energy when player turn starts, regardless of previous turn
+
 	Global.reset_energy()
 	
-	# Always update energy display when player turn starts
+	# Reset player block at start of turn
+	if player and player.has_method("reset_block"):
+		player.reset_block()
+	
 	var main_scene = get_tree().current_scene
 	if main_scene.has_method("update_energy_display"):
 		main_scene.update_energy_display()
@@ -129,7 +172,6 @@ func end_player_turn():
 	if current_phase != CombatPhase.PLAYER_TURN:
 		return
 	
-	# Process status effects on all enemies at the end of player turn
 	process_all_status_effects()
 		
 	emit_signal("turn_ended", player)
@@ -146,7 +188,6 @@ func end_player_turn():
 		else:
 			start_player_turn()
 
-# Process status effects on all enemies
 func process_all_status_effects():
 	print("TurnManager: Processing status effects for all enemies at end of player turn")
 	for enemy in registered_entities:
@@ -194,3 +235,7 @@ func is_enemy_turn() -> bool:
 
 func get_current_phase() -> CombatPhase:
 	return current_phase
+
+func reset_block():
+	# Implement block reset logic here
+	pass

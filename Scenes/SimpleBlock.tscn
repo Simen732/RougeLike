@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://coviqihifk1wi"]
+
+[ext_resource type="Texture2D" uid="uid://c7kqbo1mekn4m" path="res://assets/pixelCardAssest.png" id="1_3mc4m"]
+[ext_resource type="Script" uid="uid://dw6yvoefeh5sh" path="res://Scripts/Cards/SimpleBlock.gd" id="2_1jkkk"]
+
+[node name="Sprite2D" type="Sprite2D"]
+texture_filter = 1
+position = Vector2(224, 192)
+scale = Vector2(2, 2)
+texture = ExtResource("1_3mc4m")
+region_enabled = true
+region_rect = Rect2(250.058, 4.02837, 100.019, 128)
+script = ExtResource("2_1jkkk")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -3.8147e-06)
+scale = Vector2(2.24, 2.24)
+texture = ExtResource("1_3mc4m")
+region_enabled = true
+region_rect = Rect2(568.016, 171.981, 25.9872, 26.0501)

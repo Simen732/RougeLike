@@ -8,6 +8,7 @@ var doubleSlashCard = preload("res://Scenes/DoubleSlash.tscn")
 var healCard = preload("res://Scenes/HealCard.tscn")
 var poisonCard = preload("res://Scenes/PoisonCard.tscn")
 var poisonSlash = preload("res://Scenes/PoisonSlash.tscn")
+var simpleBlock = preload("res://Scenes/SimpleBlock.tscn")
 var hand_node
 var deck_visual_node
 var deck_count_label
@@ -22,22 +23,31 @@ func _ready():
 	draw_starting_hand()
 
 func draw_starting_hand():
-	for i in range(4):
+	for i in range(Global.cards_at_combat_start):
 		draw_card()
 
 func initialize_deck():
-	# Get starting deck from class manager
-	var starting_deck = Global.class_manager.get_starting_deck()
-	
-	for card_type in starting_deck:
-		var count = starting_deck[card_type]
+	# Check if we have a persistent deck in Global
+	if Global.current_deck.size() > 0:
+		# Use the persistent deck
+		deck = Global.current_deck.duplicate()
+		print("Card Manager: Loaded persistent deck with ", deck.size(), " cards")
+	else:
+		# First time - create starting deck from class
+		var starting_deck = Global.class_manager.get_starting_deck()
 		
-		# Add cards of this type to deck
-		if card_type in Global.card_types:
-			for i in range(count):
-				add_card_to_deck(Global.card_types[card_type].new())
-		else:
-			print("Card Manager: Unknown card type in starting deck: ", card_type)
+		for card_type in starting_deck:
+			var count = starting_deck[card_type]
+			
+			if card_type in Global.card_types:
+				for i in range(count):
+					add_card_to_deck(Global.card_types[card_type].new())
+			else:
+				print("Card Manager: Unknown card type in starting deck: ", card_type)
+		
+		# Save to Global
+		Global.current_deck = deck.duplicate()
+		print("Card Manager: Created new deck with ", deck.size(), " cards")
 	
 	shuffle_deck()
 	print("Card Manager: Deck initialized with ", deck.size(), " cards based on selected class")
@@ -47,6 +57,18 @@ func shuffle_deck():
 
 func add_card_to_deck(card):
 	deck.append(card)
+
+# Add new cards to the deck (for rewards, shops, etc.)
+func add_cards_to_deck(card_type: String, count: int = 1):
+	if card_type in Global.card_types:
+		for i in range(count):
+			var new_card = Global.card_types[card_type].new()
+			deck.append(new_card)
+			Global.current_deck.append(new_card)  # Also add to persistent deck
+		print("CardManager: Added ", count, "x ", card_type, " to deck. Deck size: ", deck.size())
+		update_deck_visual()
+	else:
+		print("CardManager: Unknown card type: ", card_type)
 
 func update_deck_visual():
 	if deck_count_label:
@@ -85,6 +107,8 @@ func draw_card():
 		card_instance = poisonCard.instantiate()
 	elif "poison_slash" in card_type:
 		card_instance = poisonSlash.instantiate()
+	elif "SimpleBlock" in card_type:
+		card_instance = simpleBlock.instantiate()
 	else:
 		print("Card Manager: Unknown card type: ", card_type)
 		return false
@@ -142,7 +166,7 @@ func end_turn():
 	await get_tree().process_frame
 	
 	var current_hand_size = hand_node.get_child_count()
-	var cards_to_draw = min(4, MAX_HAND_SIZE - current_hand_size)
+	var cards_to_draw = min(Global.cards_per_round, MAX_HAND_SIZE - current_hand_size)
 	
 	if cards_to_draw > 0:
 		draw_cards(cards_to_draw)

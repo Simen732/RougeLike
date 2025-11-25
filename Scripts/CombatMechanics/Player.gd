@@ -14,6 +14,7 @@ var card_animations = {
 
 @export var max_health = 100
 @export var speed = 12  # Player speed for turn order
+@export var block = 0
 var current_health = max_health
 var current_class = "Warrior"  # Default class
 
@@ -96,18 +97,38 @@ func get_animation_length(animation_name: String) -> float:
 	return 1.0  # Default duration if animation not found
 
 func take_damage(damage_amount):
-	progress_bar.value = current_health - damage_amount
-	current_health -= damage_amount
-	print("Player took ", damage_amount, " damage! Health: ", current_health, "/", max_health)
+	var remaining_damage = damage_amount
 	
-	# Visual feedback (optional - you can customize this)
-	modulate = Color(1, 0.5, 0.5)
-	await get_tree().create_timer(0.15).timeout
-	modulate = Color(1, 1, 1)
+	# First consume block
+	if block > 0:
+		if block >= remaining_damage:
+			block -= remaining_damage
+			remaining_damage = 0
+			print("Player blocked ", damage_amount, " damage! Remaining block: ", block)
+		else:
+			remaining_damage -= block
+			print("Player blocked ", block, " damage! ", remaining_damage, " damage remaining")
+			block = 0
 	
-	# Check if player died
-	if current_health <= 0:
-		die()
+	# Apply remaining damage to health
+	if remaining_damage > 0:
+		progress_bar.value = current_health - remaining_damage
+		current_health -= remaining_damage
+		print("Player took ", remaining_damage, " damage! Health: ", current_health, "/", max_health)
+		
+		# Visual feedback (optional - you can customize this)
+		modulate = Color(1, 0.5, 0.5)
+		await get_tree().create_timer(0.15).timeout
+		modulate = Color(1, 1, 1)
+		
+		# Check if player died
+		if current_health <= 0:
+			die()
+	else:
+		# All damage blocked - brief flash
+		modulate = Color(0.7, 0.7, 1.0)
+		await get_tree().create_timer(0.1).timeout
+		modulate = Color(1, 1, 1)
 
 func die():
 	print("Player died!")
@@ -143,6 +164,17 @@ func show_game_over_screen():
 	# You can implement a game over UI here
 	# For now, just print a message and offer restart option
 	print("GAME OVER - Press R to restart or ESC to quit")
+
+func apply_block(block_amount: int):
+	block += block_amount
+	print("Player gained ", block_amount, " block! Total block: ", block)
+
+func reset_block():
+	block = 0
+	print("Player: Block reset to 0")
+
+func get_block() -> int:
+	return block
 
 func heal(heal_amount):
 	current_health = min(current_health + heal_amount, max_health)

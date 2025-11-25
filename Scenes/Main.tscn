@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cs3u56q8a35hu"]
+[gd_scene load_steps=12 format=3 uid="uid://cs3u56q8a35hu"]
 
 [ext_resource type="PackedScene" uid="uid://ddbrbidvr5k5l" path="res://Scenes/Player.tscn" id="1_e5luo"]
 [ext_resource type="Script" uid="uid://brdlbvhpsov6p" path="res://Scripts/Misc/Main.gd" id="1_v1gob"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://6nlqq3pv068l" path="res://Scenes/PauseMenu.tscn" id="6_v1gob"]
 [ext_resource type="Script" uid="uid://b7qua0ccwesde" path="res://Scripts/Enemies/EnemySpawner.gd" id="7_50glp"]
 [ext_resource type="PackedScene" uid="uid://45hrtrppkaxp" path="res://Scenes/TurnOrderUI.tscn" id="7_jw32o"]
+[ext_resource type="PackedScene" uid="uid://c8hkmam2pqr7t" path="res://Scenes/UI/VictoryScreen.tscn" id="8_50glp"]
 
 [sub_resource type="Animation" id="Animation_v1gob"]
 length = 0.001
@@ -95,6 +96,13 @@ color = Color(0.548963, 0.548963, 0.548963, 1)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
+[node name="VictoryScreen" parent="CanvasLayer" instance=ExtResource("8_50glp")]
+visible = false
+offset_left = 3.0
+offset_top = 2.0
+offset_right = 3.0
+offset_bottom = 2.0
+
 [node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("6_v1gob")]
 position = Vector2(889, 361)
 
@@ -138,4 +146,4 @@ offset_left = 174.0
 offset_top = 806.0
 offset_right = 339.0
 offset_bottom = 829.0
-text = "This Should not show"
+text = "Du ser ikke denne +100 stealth"

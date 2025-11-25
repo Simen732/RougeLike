@@ -43,13 +43,14 @@ func _process(_delta):
 		
 		animated_sprite_2d.play("Death")
 		Dead = true
-		Global.unregister_enemy(self)
 		on_death()
+		Global.unregister_enemy(self)
 	elif !Dead and !is_attacking:
 		animated_sprite_2d.play("Idle")
 
 # Virtual function for death behavior
 func on_death():
+	progress_bar.visible = false
 	pass
 
 func take_damage(damage_amount):

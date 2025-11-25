@@ -148,18 +148,23 @@ texture_filter = 1
 position = Vector2(487, 270)
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_5jp54")
-animation = &"Idle"
+animation = &"Death"
 autoplay = "Idle"
 script = ExtResource("2_p1xxi")
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
-offset_left = -28.6
-offset_top = -16.0
-offset_right = 29.4
-offset_bottom = -10.0
+modulate = Color(0.345098, 0.541176, 0.878431, 1)
+self_modulate = Color(0.345098, 0.541176, 0.878431, 1)
+offset_left = -14.4
+offset_top = -14.4
+offset_right = 17.6
+offset_bottom = -9.39996
 show_percentage = false
 
 [node name="TargetIndicator" type="Polygon2D" parent="."]
-position = Vector2(0, -17)
+modulate = Color(0.227451, 0.356863, 0.580392, 1)
+self_modulate = Color(0.345098, 0.541176, 0.878431, 1)
+position = Vector2(1.59518, -3.39996)
 rotation = 3.14159
+scale = Vector2(0.280299, 0.280299)
 polygon = PackedVector2Array(0, 0, 8, 16, -8, 16)
